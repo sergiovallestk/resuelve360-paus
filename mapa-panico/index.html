@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mapa del Pánico — Conoce tus patrones</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0c1220;--bg2:#111827;--bg3:#1a2436;--bg4:#223048;
+  --border:rgba(74,144,212,0.12);--border2:rgba(74,144,212,0.25);
+  --text:#d4e4f7;--text2:#7fa8cc;--text3:#3d6080;
+  --blue:#4a90d4;--blue-dim:rgba(74,144,212,0.10);--blue-bright:#7ab3e8;
+  --teal:#3dd6c8;--teal-dim:rgba(61,214,200,0.10);
+  --serif:'Libre Baskerville',Georgia,serif;
+  --sans:'Barlow',system-ui,sans-serif;--r:10px;
+}
+html,body{min-height:100%}
+body{
+  background:var(--bg);color:var(--text);font-family:var(--sans);font-size:16px;
+  line-height:1.6;-webkit-font-smoothing:antialiased;
+  display:flex;flex-direction:column;align-items:center;
+  padding:1.5rem 1rem 4rem;min-height:100vh;overflow-x:hidden;position:relative;
+}
+body::before{content:'';position:fixed;top:0;left:50%;transform:translateX(-50%);
+  width:800px;height:350px;pointer-events:none;z-index:0;border-radius:0 0 50% 50%;
+  background:radial-gradient(ellipse at 50% 0%,rgba(74,144,212,.10) 0%,transparent 70%);}
+#app{position:relative;z-index:1;width:100%;max-width:420px}
+.screen{display:flex;flex-direction:column;align-items:center;gap:1.15rem;animation:fadeUp .4s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── Typography ── */
+.map-icon{width:58px;height:58px;border-radius:50%;background:var(--blue-dim);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;margin:0 auto;font-size:24px}
+.title{font-family:var(--serif);font-size:24px;font-weight:700;color:var(--text);text-align:center;line-height:1.25}
+.title em{font-style:italic;color:var(--blue-bright)}
+.subtitle{font-size:11px;color:var(--text3);text-align:center;letter-spacing:.07em;text-transform:uppercase}
+.body-text{font-size:13.5px;color:var(--text2);text-align:center;line-height:1.75}
+.badge{font-size:11px;font-weight:500;color:var(--blue);background:var(--blue-dim);border:1px solid var(--border2);padding:4px 12px;border-radius:20px;letter-spacing:.04em}
+.section-title{font-size:15px;font-weight:600;color:var(--text);width:100%;margin-bottom:-4px}
+.section-sub{font-size:12px;color:var(--text3);width:100%;margin-top:-8px}
+
+/* ── Tabs ── */
+.tabs{display:flex;gap:4px;width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:4px}
+.tab{flex:1;padding:7px 4px;border-radius:7px;font-family:var(--sans);font-size:11px;font-weight:500;cursor:pointer;border:none;background:transparent;color:var(--text3);transition:all .2s;white-space:nowrap;text-align:center}
+.tab.active{background:var(--blue-dim);color:var(--blue-bright);border:1px solid var(--border2)}
+
+/* ── Buttons ── */
+.btn{width:100%;padding:13px 20px;border-radius:var(--r);font-family:var(--sans);font-size:14.5px;font-weight:600;cursor:pointer;border:none;transition:all .2s}
+.btn-primary{background:var(--blue);color:#fff}
+.btn-primary:hover{background:var(--blue-bright);transform:translateY(-1px)}
+.btn-primary:active{transform:translateY(0)}
+.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border2)}
+.btn-ghost:hover{background:var(--bg3)}
+.btn-sm{padding:8px 14px;font-size:12.5px;width:auto}
+
+/* ── Cards ── */
+.card{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:1.1rem 1.25rem}
+.accent-card{width:100%;background:var(--blue-dim);border:1px solid var(--border2);border-radius:var(--r);padding:1.25rem;text-align:center}
+.accent-card p{font-family:var(--serif);font-size:17px;font-style:italic;color:var(--blue-bright);line-height:1.7}
+.info-card{width:100%;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:var(--r);padding:.9rem 1.1rem}
+.info-card p{font-size:12.5px;color:var(--text3);line-height:1.7}
+.teal-card{width:100%;background:var(--teal-dim);border:1px solid rgba(61,214,200,.2);border-radius:var(--r);padding:.9rem 1.1rem}
+
+/* ── Step list intro ── */
+.step-list{width:100%;display:flex;flex-direction:column;gap:8px}
+.step-row{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r)}
+.step-icon-sm{width:28px;height:28px;border-radius:50%;background:var(--blue-dim);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.step-name{font-size:13.5px;color:var(--text);flex:1}
+.step-time{font-size:11px;color:var(--text3)}
+
+/* ── Chip grid (Disparadores & Señales) ── */
+.chip-grid{display:flex;flex-wrap:wrap;gap:7px;width:100%}
+.chip{padding:7px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:20px;font-size:12.5px;color:var(--text2);cursor:pointer;transition:all .2s;user-select:none}
+.chip:hover{border-color:var(--border2)}
+.chip.sel{background:rgba(255,255,255,.14);border:2px solid rgba(255,255,255,.55);color:#fff;font-weight:600}
+
+/* ── Body scale ── */
+.body-table{width:100%;border-collapse:separate;border-spacing:0 6px}
+.body-row td{padding:2px 3px;vertical-align:middle}
+.body-label{font-size:12.5px;color:var(--text2);padding-right:8px;min-width:110px;white-space:nowrap}
+.scale-wrap{display:flex;gap:5px}
+.scale-btn{width:32px;height:32px;border-radius:7px;border:1.5px solid var(--border);background:transparent;color:var(--text3);font-size:13px;font-weight:500;cursor:pointer;font-family:var(--sans);transition:all .2s;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.scale-btn:hover{border-color:var(--border2);color:var(--text)}
+.scale-btn.sel{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.6);color:#fff;font-weight:700}
+
+/* ── Context textarea ── */
+.ctx-input{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:11px 14px;color:var(--text);font-family:var(--sans);font-size:13.5px;line-height:1.6;resize:none;outline:none;min-height:70px;transition:border-color .2s}
+.ctx-input:focus{border-color:rgba(74,144,212,.35)}
+.ctx-input::placeholder{color:var(--text3)}
+
+/* ── Summary ── */
+.summary-block{width:100%;display:flex;flex-direction:column;gap:10px}
+.sum-row{display:flex;justify-content:space-between;align-items:center;padding:9px 12px;background:var(--bg3);border-radius:8px}
+.sum-lbl{font-size:12.5px;color:var(--text2)}
+.sum-val{font-size:12.5px;font-weight:600;color:var(--blue-bright)}
+.tag-row{display:flex;flex-wrap:wrap;gap:5px}
+.tag-sm{font-size:11px;padding:3px 9px;background:var(--blue-dim);border:1px solid var(--border2);border-radius:20px;color:var(--blue-bright)}
+
+/* ── History ── */
+.history-card{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:1rem;display:flex;flex-direction:column;gap:.75rem}
+.hist-date{font-size:11.5px;font-weight:600;color:var(--blue-bright)}
+.hist-sep{width:100%;height:1px;background:var(--border)}
+.bar-row{display:flex;align-items:center;gap:8px;width:100%}
+.bar-lbl{font-size:11px;color:var(--text3);min-width:80px}
+.bar-wrap{flex:1;height:6px;background:var(--bg3);border-radius:3px;overflow:hidden}
+.bar-fill{height:6px;border-radius:3px;background:var(--blue);transition:width .4s ease}
+
+/* ── Actions row ── */
+.actions-row{display:flex;gap:8px;width:100%}
+.actions-row .btn{flex:1}
+
+/* ── Success ── */
+.success-ring{width:64px;height:64px;border-radius:50%;background:var(--teal-dim);border:1.5px solid rgba(61,214,200,.3);display:flex;align-items:center;justify-content:center;margin:0 auto;animation:pop .4s cubic-bezier(.17,.67,.38,1.4)}
+@keyframes pop{from{transform:scale(.5);opacity:0}to{transform:scale(1);opacity:1}}
+
+/* ── Responsive ── */
+@media(max-width:380px){
+  .title{font-size:21px}.btn{padding:12px 16px;font-size:13.5px}
+  .tab{font-size:10px;padding:6px 3px}.body-label{min-width:90px;font-size:11.5px}
+  .scale-btn{width:28px;height:28px;font-size:12px}.chip{font-size:11.5px;padding:6px 10px}
+}
+</style>
+</head>
+<body>
+<div id="app"><div id="root"></div></div>
+<script>
+/* ═══════════════════════════════════════
+   DATA POOLS
+═══════════════════════════════════════ */
+const INTRO_QUOTES=[
+  '"El pánico no llega de la nada. Solo parece que sí, porque nadie te enseñó a leer las señales que llegan 20 minutos antes."',
+  '"Lo que no conoces te sorprende. Lo que conoces, ya no puede dominarte de la misma manera."',
+  '"Cada vez que mapees un episodio, tienes más información que antes. El pánico pierde sorpresa. Y la sorpresa es su principal arma."',
+  '"No necesitas eliminar el pánico. Necesitas dejar de temerle. Y eso empieza por entender cómo funciona en tu cuerpo específico."',
+];
+const ALL_TRIGGERS=[
+  'Poco dormir','Mucho café','Conflicto con alguien','Lugar desconocido',
+  'Multitudes','Mucho tiempo sentado','Noticias / redes','Trabajo acumulado',
+  'Incertidumbre sobre algo','Resaca','Hambre o azúcar baja','Calor intenso',
+  'Viaje / transporte','Cita o evento social','Reunión importante','Ejercicio intenso',
+  'No hacer ejercicio','Esperar algo importante','Problemas económicos','Soledad prolongada',
+  'Ruido constante','Cambio de rutina','Día sin estructura','Falta de tiempo',
+];
+const ALL_SIGNALS=[
+  'Mandíbula apretada','Respiración corta','Hombros tensos','Corazón un poco acelerado',
+  'Irritabilidad sin causa','Dificultad para concentrarse','Necesidad de control',
+  'Urgencia sin razón clara','Estómago apretado','Mente que da vueltas',
+  'Sensación de alerta constante','Inquietud física','Ver todo como amenaza',
+  'Impaciencia excesiva','Mareo leve','Necesidad de salir del lugar',
+];
+const BODY_ZONES=['Tensión muscular','Resp. agitada','Corazón acelerado','Malestar estomacal','Cabeza / mareo'];
+const CONTEXT_TEMPLATES=[
+  'Era de noche, había tenido poco sueño y...',
+  'Estaba en público cuando de repente...',
+  'Llevaba horas trabajando sin parar y...',
+  'Había tenido una conversación difícil antes y...',
+  'No había comido bien ese día y...',
+];
+const DONE_MSGS=[
+  '"Tu mapa se vuelve más preciso con cada uso. El siguiente episodio ya tiene menos poder sobre ti."',
+  '"Ahora tienes información que antes no tenías. Eso cambia todo."',
+  '"Conocer tus patrones no elimina el pánico, pero le quita el elemento sorpresa. Y eso es enorme."',
+  '"Cada mapeo que haces es un paso hacia dejar de ser víctima del pánico y empezar a ser alguien que lo conoce."',
+];
+
+function pick(a){return Math.floor(Math.random()*a.length);}
+function sh(a){return a.slice().sort(()=>Math.random()-.5);}
+
+/* ═══ STATE ═══ */
+const S={
+  screen:'intro',tab:'triggers',
+  trigPool:[],trigSel:{},
+  signalPool:[],signalSel:{},
+  bodyScale:{},
+  context:'',
+  iQ:0,cT:0,dM:0,
+  log:JSON.parse(localStorage.getItem('mp_log')||'[]'),
+};
+
+function $(s){return document.querySelector(s);}
+function initSession(){
+  S.trigPool=sh(ALL_TRIGGERS).slice(0,16);
+  S.signalPool=sh(ALL_SIGNALS).slice(0,12);
+  S.trigSel={}; S.signalSel={}; S.bodyScale={}; S.context='';
+  S.iQ=pick(INTRO_QUOTES); S.cT=pick(CONTEXT_TEMPLATES); S.dM=pick(DONE_MSGS);
+  S.tab='triggers';
+}
+
+/* ═══ RENDER ═══ */
+function render(scr){ S.screen=scr; const fns={intro:introH,map:mapH,result:resultH,history:historyH}; $('#root').innerHTML=fns[scr](); bind(scr); }
+function renderTab(){ $('#tab-content').innerHTML=tabContent(); bindTab(); }
+
+function introH(){
+  const count=S.log.length;
+  return`<div class="screen">
+  <div style="height:.5rem"></div>
+  <div class="map-icon">🗺</div>
+  <div><p class="title">Mapa del <em>Pánico</em></p><p class="subtitle" style="margin-top:4px">Conoce tus patrones · 4 módulos</p></div>
+  <div class="accent-card"><p>${INTRO_QUOTES[S.iQ]}</p></div>
+  <div class="step-list">
+    ${[['⚡','Disparadores','Qué lo activa'],['🫀','Cuerpo','Cómo reacciona'],['📍','Contexto','En qué situación'],['🔍','Señales tempranas','Qué avisa antes']].map(([e,n,d])=>`<div class="step-row"><div class="step-icon-sm">${e}</div><span class="step-name">${n}</span><span class="step-time">${d}</span></div>`).join('')}
+  </div>
+  ${count>0?`<button class="btn btn-ghost" id="btn-history" style="margin-bottom:-4px">📊 Ver mis mapas anteriores (${count})</button>`:''}
+  <button class="btn btn-primary" id="btn-start">${count>0?'Mapear otro episodio':'Mapear este episodio'}</button>
+</div>`;}
+
+function mapH(){
+  return`<div class="screen">
+  <div class="tabs" id="tabs-nav">
+    ${[['triggers','⚡ Disparadores'],['body','🫀 Cuerpo'],['context','📍 Contexto'],['signals','🔍 Señales'],['result','✓ Mi Mapa']].map(([k,l])=>`<button class="tab ${S.tab===k?'active':''}" data-tab="${k}">${l}</button>`).join('')}
+  </div>
+  <div id="tab-content" style="width:100%;display:flex;flex-direction:column;gap:1rem">${tabContent()}</div>
+</div>`;}
+
+function tabContent(){
+  if(S.tab==='triggers') return triggersTab();
+  if(S.tab==='body')     return bodyTab();
+  if(S.tab==='context')  return contextTab();
+  if(S.tab==='signals')  return signalsTab();
+  if(S.tab==='result')   return resultTab();
+  return '';
+}
+
+function triggersTab(){
+  const n=Object.values(S.trigSel).filter(Boolean).length;
+  return`
+  <div class="badge" style="align-self:flex-start">Módulo 1 · Disparadores</div>
+  <p class="title" style="font-size:20px">¿Qué pudo haberlo<br><em>activado</em> esta vez?</p>
+  <p style="font-size:13px;color:var(--text2);line-height:1.65">Selecciona todo lo que aplique en las últimas 24 horas. No tiene que ser la causa directa — incluso factores menores cuentan.</p>
+  <div class="chip-grid" id="trig-grid">
+    ${S.trigPool.map(t=>`<div class="chip ${S.trigSel[t]?'sel':''}" data-trig="${t}">${t}</div>`).join('')}
+  </div>
+  ${n>0?`<p style="font-size:12px;color:var(--blue-bright);text-align:center">${n} seleccionado${n!==1?'s':''}</p>`:''}
+  <button class="btn btn-primary" id="btn-tab-next">Continuar al cuerpo →</button>`;
+}
+
+function bodyTab(){
+  const rows=BODY_ZONES.map(z=>`<tr class="body-row">
+    <td class="body-label">${z}</td>
+    <td><div class="scale-wrap">${[1,2,3,4,5].map(n=>`<button class="scale-btn ${S.bodyScale[z]===n?'sel':''}" data-zone="${z}" data-val="${n}">${n}</button>`).join('')}</div></td>
+  </tr>`).join('');
+  return`
+  <div class="badge" style="align-self:flex-start">Módulo 2 · Cuerpo</div>
+  <p class="title" style="font-size:20px">¿Con qué intensidad<br>reacciona <em>cada zona</em>?</p>
+  <p style="font-size:12.5px;color:var(--text3)">1 = casi no lo siento &nbsp;·&nbsp; 5 = es lo primero que aparece</p>
+  <div style="width:100%;overflow-x:auto">
+    <table class="body-table" id="body-table"><tbody>${rows}</tbody></table>
+  </div>
+  <div class="info-card">
+    <p>Conocer qué zona reacciona primero te permite identificar la señal más temprana del episodio.</p>
+  </div>
+  <div class="actions-row">
+    <button class="btn btn-ghost" id="btn-tab-back">← Atrás</button>
+    <button class="btn btn-primary" id="btn-tab-next">Continuar →</button>
+  </div>`;
+}
+
+function contextTab(){
+  return`
+  <div class="badge" style="align-self:flex-start">Módulo 3 · Contexto</div>
+  <p class="title" style="font-size:20px">¿En qué situación<br><em>ocurrió</em>?</p>
+  <p style="font-size:13px;color:var(--text2);line-height:1.65">Describe brevemente qué estabas haciendo, dónde estabas, qué había pasado antes. No tiene que ser literario.</p>
+  <textarea class="ctx-input" id="ctx-txt" placeholder="${CONTEXT_TEMPLATES[S.cT]}" rows="4">${S.context}</textarea>
+  <div class="info-card">
+    <p>El contexto es el patrón más ignorado. Con el tiempo, verás que ciertos ambientes o momentos aparecen siempre antes de un episodio.</p>
+  </div>
+  <div class="actions-row">
+    <button class="btn btn-ghost" id="btn-tab-back">← Atrás</button>
+    <button class="btn btn-primary" id="btn-tab-next">Continuar →</button>
+  </div>`;
+}
+
+function signalsTab(){
+  const n=Object.values(S.signalSel).filter(Boolean).length;
+  return`
+  <div class="badge" style="align-self:flex-start">Módulo 4 · Señales tempranas</div>
+  <p class="title" style="font-size:20px">¿Qué avisó <em>antes</em><br>de que llegara?</p>
+  <p style="font-size:13px;color:var(--text2);line-height:1.65">¿Qué notaste en tu cuerpo o mente en los 30 minutos previos? Aunque sea algo muy sutil que ignoraste.</p>
+  <div class="chip-grid" id="signal-grid">
+    ${S.signalPool.map(s=>`<div class="chip ${S.signalSel[s]?'sel':''}" data-sig="${s}">${s}</div>`).join('')}
+  </div>
+  ${n>0?`<p style="font-size:12px;color:var(--blue-bright);text-align:center">${n} señal${n!==1?'es':''} identificada${n!==1?'s':''}</p>`:''}
+  <div class="teal-card">
+    <p style="font-size:12.5px;color:var(--teal);line-height:1.7">💡 Si activas Modo Calma cuando notes estas señales — antes de llegar al pico — el protocolo es 3 veces más efectivo.</p>
+  </div>
+  <div class="actions-row">
+    <button class="btn btn-ghost" id="btn-tab-back">← Atrás</button>
+    <button class="btn btn-primary" id="btn-tab-next">Ver mi mapa →</button>
+  </div>`;
+}
+
+function resultTab(){
+  const trigs=Object.keys(S.trigSel).filter(k=>S.trigSel[k]);
+  const sigs=Object.keys(S.signalSel).filter(k=>S.signalSel[k]);
+  const bodyEntries=Object.entries(S.bodyScale).sort((a,b)=>b[1]-a[1]);
+  const topZone=bodyEntries[0];
+  return`
+  <div class="badge" style="align-self:flex-start">✓ Mi Mapa de este episodio</div>
+  <p class="title" style="font-size:20px">Tu <em>patrón</em><br>de este episodio</p>
+  ${trigs.length>0?`<div class="card"><p style="font-size:12px;font-weight:600;color:var(--blue-bright);margin-bottom:8px">⚡ Disparadores identificados</p><div class="tag-row">${trigs.map(t=>`<span class="tag-sm">${t}</span>`).join('')}</div></div>`:''}
+  ${bodyEntries.length>0?`<div class="card"><p style="font-size:12px;font-weight:600;color:var(--blue-bright);margin-bottom:8px">🫀 Intensidad por zona</p>${bodyEntries.map(([z,v])=>`<div class="bar-row"><span class="bar-lbl">${z}</span><div class="bar-wrap"><div class="bar-fill" style="width:${v*20}%;background:${v>=4?'#e85c4a':v>=3?'#e8a83a':'var(--blue)'}"></div></div><span style="font-size:11px;color:var(--text3)">${v}/5</span></div>`).join('')}${topZone?`<p style="font-size:12px;color:var(--text3);margin-top:8px">Primera señal física: <strong style="color:var(--text)">${topZone[0]}</strong></p>`:''}</div>`:''}
+  ${S.context?`<div class="card"><p style="font-size:12px;font-weight:600;color:var(--blue-bright);margin-bottom:6px">📍 Contexto</p><p style="font-size:13px;color:var(--text2);line-height:1.6">${S.context}</p></div>`:''}
+  ${sigs.length>0?`<div class="card"><p style="font-size:12px;font-weight:600;color:var(--blue-bright);margin-bottom:8px">🔍 Señales tempranas a vigilar</p><div class="tag-row">${sigs.map(s=>`<span class="tag-sm">${s}</span>`).join('')}</div></div>`:''}
+  <div class="teal-card">
+    <p style="font-size:12px;font-weight:600;color:var(--teal);margin-bottom:6px">✅ Qué hacer con esta información</p>
+    ${['Cuando notes tus señales tempranas → activa Modo Calma antes de que escale.','En situaciones de riesgo, ten el protocolo a la mano.','Cada vez que tengas un episodio, vuelve aquí y actualiza tu mapa. Se vuelve más preciso con el tiempo.'].map(t=>`<div style="display:flex;gap:8px;padding:4px 0"><span style="color:var(--teal);font-size:12px">✓</span><span style="font-size:12.5px;color:var(--text2);line-height:1.5">${t}</span></div>`).join('')}
+  </div>
+  <button class="btn btn-primary" id="btn-save">Guardar este mapa →</button>
+  <div class="info-card"><p>Tu mapa se guarda en este navegador. Puedes volver a actualizarlo cada vez que tengas un episodio — se vuelve más preciso con el tiempo.</p></div>`;
+}
+
+function resultH(){
+  const entry=S.log[0];
+  if(!entry) return introH();
+  return`<div class="screen">
+  <div class="success-ring"><svg viewBox="0 0 32 32" fill="none"><path d="M8 16L13 21L24 11" stroke="#3dd6c8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  <p class="title">Mapa guardado</p>
+  <p class="body-text">${DONE_MSGS[S.dM]}</p>
+  <div class="accent-card"><p>Cada episodio que mapeas te da más información. La información te da control. Y el control reduce el miedo al siguiente.</p></div>
+  ${S.log.length>1?`<button class="btn btn-ghost" id="btn-history">📊 Comparar con episodios anteriores (${S.log.length})</button>`:''}
+  <button class="btn btn-primary" id="btn-new">Mapear otro episodio</button>
+  <button class="btn btn-ghost" id="btn-home">Volver al inicio</button>
+</div>`;}
+
+function historyH(){
+  const entries=S.log.slice(0,8);
+  // Análisis de frecuencia de disparadores (sobre todos los registros, no solo los 8 visibles)
+  const trigFreq={};
+  S.log.forEach(e=>{(e.triggers||[]).forEach(t=>{trigFreq[t]=(trigFreq[t]||0)+1;});});
+  const topTrigs=Object.entries(trigFreq)
+    .filter(([,n])=>n>=2)
+    .sort((a,b)=>b[1]-a[1])
+    .slice(0,4);
+  if(entries.length===0) return`<div class="screen"><p class="body-text">Aún no tienes episodios guardados.</p><button class="btn btn-primary" id="btn-home">Volver</button></div>`;
+  return`<div class="screen">
+  <div class="map-icon">📊</div>
+  <p class="title" style="font-size:21px">Tus <em>patrones</em><br>en el tiempo</p>
+  <p class="body-text">Cada entrada muestra cómo evolucionó tu manejo del episodio.</p>
+  ${entries.map((e,i)=>{
+    const trigs=(e.triggers||[]).length;
+    const sigs=(e.signals||[]).length;
+    const avgBody=e.bodyTotal&&e.bodyCount?Math.round(e.bodyTotal/e.bodyCount):null;
+    return`<div class="history-card">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span class="hist-date">Episodio ${entries.length-i} · ${e.date}</span>
+        <span style="font-size:11px;color:var(--text3)">${e.time||''}</span>
+      </div>
+      <div class="hist-sep"></div>
+      ${trigs>0?`<div class="bar-row"><span class="bar-lbl">Disparadores</span><div class="bar-wrap"><div class="bar-fill" style="width:${Math.min(100,trigs/16*100)}%"></div></div><span style="font-size:11px;color:var(--text3)">${trigs}</span></div><div class="tag-row" style="margin-top:3px;padding:0 2px">${(e.triggers||[]).slice(0,4).map(t=>`<span class="tag-sm">${t}</span>`).join("")}${(e.triggers||[]).length>4?`<span class="tag-sm" style="opacity:.55">+${e.triggers.length-4} más</span>`:""}</div>`:''}
+      ${sigs>0?`<div class="bar-row"><span class="bar-lbl">Señales vistas</span><div class="bar-wrap"><div class="bar-fill" style="width:${Math.min(100,sigs/12*100)}%;background:var(--teal)"></div></div><span style="font-size:11px;color:var(--text3)">${sigs}</span></div>`:''}
+      ${avgBody!==null?`<div class="bar-row"><span class="bar-lbl">Intensidad cuerpo</span><div class="bar-wrap"><div class="bar-fill" style="width:${avgBody/5*100}%;background:${avgBody>=4?'#e85c4a':avgBody>=3?'#e8a83a':'var(--blue)'}"></div></div><span style="font-size:11px;color:var(--text3)">${avgBody}/5</span></div>`:''}
+      ${e.topZone?`<p style="font-size:11px;color:var(--text3)">Primera señal física: <strong style="color:var(--text2)">${e.topZone}</strong></p>`:''}
+    </div>`;
+  }).join('')}
+  ${S.log.length>=3&&topTrigs.length>0?`
+  <div class="card" style="border-color:rgba(74,144,212,.25)">
+    <p style="font-size:12px;font-weight:600;color:var(--blue-bright);margin-bottom:10px">🔁 Tus disparadores más frecuentes</p>
+    <div class="tag-row" style="margin-bottom:10px">
+      ${topTrigs.map(([t,n])=>`<span class="tag-sm" style="display:inline-flex;align-items:center;gap:5px">${t}<span style="background:rgba(74,144,212,.25);border-radius:10px;padding:1px 6px;font-size:10px;font-weight:700;color:var(--blue-bright)">×${n}</span></span>`).join('')}
+    </div>
+    <p style="font-size:12px;color:var(--text3);line-height:1.65">
+      ${topTrigs[0][1]>=Math.ceil(S.log.length*0.5)?`"${topTrigs[0][0]}" aparece en ${topTrigs[0][1]} de tus ${S.log.length} episodios — es tu disparador principal. Anticípalo para interceptar el pánico antes de que escale.`:`Estos patrones se repiten en tu historial. Reconocerlos con anticipación te da ventaja para activar Modo Calma antes de llegar al pico.`}
+    </p>
+  </div>`:``}
+  ${entries.length>=2?`<div class="teal-card"><p style="font-size:12.5px;color:var(--teal);line-height:1.7">💡 Cuando identifiques un disparador recurrente, ese es tu punto de intervención más poderoso. Activa Modo Calma <em>antes</em> de entrar a esa situación.</p></div>`:''}
+  <button class="btn btn-ghost" id="btn-home">← Volver al inicio</button>
+</div>`;}
+
+/* ═══ BIND ═══ */
+function bind(scr){
+  const on=(id,fn)=>{const el=$(id);if(el)el.addEventListener('click',fn);};
+  const TAB_ORDER=['triggers','body','context','signals','result'];
+
+  if(scr==='intro'){
+    on('#btn-start',()=>{ initSession(); render('map'); });
+    on('#btn-history',()=>render('history'));
+  }
+
+  if(scr==='map'){
+    // Tab nav — event delegation
+    const tnav=$('#tabs-nav');
+    if(tnav) tnav.addEventListener('click',e=>{
+      const btn=e.target.closest('.tab'); if(!btn) return;
+      S.tab=btn.dataset.tab; renderTab();
+      document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===S.tab));
+    });
+    bindTab();
+  }
+
+  if(scr==='result'){
+    on('#btn-new',()=>{ initSession(); render('map'); });
+    on('#btn-home',()=>render('intro'));
+    on('#btn-history',()=>render('history'));
+  }
+  if(scr==='history') on('#btn-home',()=>render('intro'));
+}
+
+function bindTab(){
+  const on=(id,fn)=>{const el=$(id);if(el)el.addEventListener('click',fn);};
+  const TAB_ORDER=['triggers','body','context','signals','result'];
+  const nextTab=()=>{ const i=TAB_ORDER.indexOf(S.tab); if(i<TAB_ORDER.length-1){ S.tab=TAB_ORDER[i+1]; renderTab(); updateTabNav(); } };
+  const prevTab=()=>{ const i=TAB_ORDER.indexOf(S.tab); if(i>0){ S.tab=TAB_ORDER[i-1]; renderTab(); updateTabNav(); } };
+
+  if(S.tab==='triggers'){
+    const tg=$('#trig-grid');
+    if(tg) tg.addEventListener('click',e=>{
+      const c=e.target.closest('.chip'); if(!c) return;
+      const t=c.dataset.trig; S.trigSel[t]=!S.trigSel[t];
+      c.classList.toggle('sel',!!S.trigSel[t]);
+      // update count
+      const n=Object.values(S.trigSel).filter(Boolean).length;
+      const old=$('#tab-content').querySelector('p[style*="blue-bright"]');
+      if(old) old.textContent=n>0?`${n} seleccionado${n!==1?'s':''}`:' ';
+    });
+    on('#btn-tab-next',nextTab);
+  }
+
+  if(S.tab==='body'){
+    const bt=$('#body-table');
+    if(bt) bt.addEventListener('click',e=>{
+      const btn=e.target.closest('.scale-btn'); if(!btn) return;
+      const z=btn.dataset.zone, v=parseInt(btn.dataset.val);
+      S.bodyScale[z]=v;
+      bt.querySelectorAll(`.scale-btn[data-zone="${z}"]`).forEach(b=>b.classList.toggle('sel',parseInt(b.dataset.val)===v));
+    });
+    on('#btn-tab-back',prevTab);
+    on('#btn-tab-next',nextTab);
+  }
+
+  if(S.tab==='context'){
+    const ct=$('#ctx-txt'); if(ct) ct.addEventListener('input',e=>S.context=e.target.value);
+    on('#btn-tab-back',prevTab);
+    on('#btn-tab-next',nextTab);
+  }
+
+  if(S.tab==='signals'){
+    const sg=$('#signal-grid');
+    if(sg) sg.addEventListener('click',e=>{
+      const c=e.target.closest('.chip'); if(!c) return;
+      const s=c.dataset.sig; S.signalSel[s]=!S.signalSel[s];
+      c.classList.toggle('sel',!!S.signalSel[s]);
+      const n=Object.values(S.signalSel).filter(Boolean).length;
+      const old=$('#tab-content').querySelector('p[style*="blue-bright"]');
+      if(old) old.textContent=n>0?`${n} señal${n!==1?'es':''} identificada${n!==1?'s':''}`:' ';
+    });
+    on('#btn-tab-back',prevTab);
+    on('#btn-tab-next',()=>{ S.tab='result'; renderTab(); updateTabNav(); });
+  }
+
+  if(S.tab==='result'){
+    on('#btn-save',()=>{
+      const trigs=Object.keys(S.trigSel).filter(k=>S.trigSel[k]);
+      const sigs=Object.keys(S.signalSel).filter(k=>S.signalSel[k]);
+      const bodyEntries=Object.entries(S.bodyScale);
+      const bodyTotal=bodyEntries.reduce((a,[,v])=>a+v,0);
+      const topZone=bodyEntries.sort((a,b)=>b[1]-a[1])[0];
+      const now=new Date();
+      const entry={
+        date:now.toLocaleDateString('es-MX',{day:'numeric',month:'short',year:'numeric'}),
+        time:now.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'}),
+        ts:now.getTime(),
+        triggers:trigs, signals:sigs, bodyTotal, bodyCount:bodyEntries.length,
+        topZone:topZone?topZone[0]:null, context:S.context,
+      };
+      S.log.unshift(entry);
+      if(S.log.length>20) S.log.pop();
+      try{localStorage.setItem('mp_log',JSON.stringify(S.log));}catch(e){}
+      render('result');
+    });
+  }
+}
+
+function updateTabNav(){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===S.tab));
+}
+
+initSession(); render('intro');
+</script>
+</body>
+</html>
