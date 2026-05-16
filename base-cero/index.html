@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Base Cero — Tu rutina matutina de 7 minutos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,600;0,800;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#faf6f0;--bg2:#f2ebe0;--bg3:#e8dece;--bg4:#ddd0be;
+  --ink:#1c1510;--ink2:#3d2e22;--ink3:#7a6555;--ink4:#b09880;
+  --orange:#d4550a;--orange2:#e8742a;
+  --orange-bg:rgba(212,85,10,0.08);--orange-b:rgba(212,85,10,0.18);
+  --green:#3a7d44;--green-bg:rgba(58,125,68,0.08);--green-b:rgba(58,125,68,0.2);
+  --serif:'Fraunces',Georgia,serif;--sans:'DM Sans',system-ui,sans-serif;--r:10px;
+}
+html,body{min-height:100%}
+body{
+  background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;display:flex;flex-direction:column;align-items:center;
+  padding:2rem 1rem 4rem;min-height:100vh;overflow-x:hidden;position:relative;
+}
+body::before{content:'';position:fixed;top:0;left:50%;transform:translateX(-50%);
+  width:100%;max-width:600px;height:260px;pointer-events:none;z-index:0;
+  background:linear-gradient(180deg,rgba(240,160,60,.18) 0%,transparent 100%);}
+#app{position:relative;z-index:1;width:100%;max-width:400px}
+.screen{display:flex;flex-direction:column;align-items:center;gap:1.25rem;animation:fadeUp .4s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.sun-wrap{width:60px;height:60px;border-radius:50%;background:rgba(240,160,60,.15);border:1.5px solid rgba(240,160,60,.3);display:flex;align-items:center;justify-content:center;margin:0 auto;font-size:26px}
+.title{font-family:var(--serif);font-size:24px;font-weight:800;color:var(--ink);text-align:center;line-height:1.2}
+.title em{font-style:italic;color:var(--orange)}
+.subtitle{font-size:11px;color:var(--ink4);text-align:center;letter-spacing:.07em;text-transform:uppercase}
+.body-text{font-size:13.5px;color:var(--ink3);text-align:center;line-height:1.75}
+.badge{font-size:11px;font-weight:500;color:var(--orange);background:var(--orange-bg);border:1px solid var(--orange-b);padding:4px 12px;border-radius:20px;letter-spacing:.04em}
+.dots{display:flex;gap:6px;justify-content:center}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--bg3);border:1px solid var(--bg3);transition:all .3s}
+.dot.done{background:rgba(212,85,10,.3);border-color:rgba(212,85,10,.3)}
+.dot.active{background:var(--orange);border-color:var(--orange)}
+.card{width:100%;background:var(--bg2);border:1px solid var(--bg3);border-radius:var(--r);padding:1.1rem 1.25rem}
+.accent-card{width:100%;background:var(--orange-bg);border:1px solid var(--orange-b);border-radius:var(--r);padding:1.25rem;text-align:center}
+.accent-card p{font-family:var(--serif);font-size:17px;font-style:italic;color:var(--ink2);line-height:1.7}
+.belief-card{width:100%;background:var(--bg2);border-left:2.5px solid var(--orange);padding:1rem 1.25rem;border-radius:0 var(--r) var(--r) 0}
+.belief-card p{font-size:13px;color:var(--ink3);line-height:1.7}
+.info-box{width:100%;background:rgba(212,85,10,0.05);border:1px solid var(--orange-b);border-radius:var(--r);padding:.9rem 1.1rem}
+.info-box p{font-size:12.5px;color:var(--ink3);line-height:1.7}
+.progress-wrap{width:100%;height:3px;background:var(--bg3);border-radius:2px;overflow:hidden}
+.progress-fill{height:3px;background:var(--orange);border-radius:2px;transition:width .4s ease}
+.btn{width:100%;padding:13px 20px;border-radius:var(--r);font-family:var(--sans);font-size:14.5px;font-weight:500;cursor:pointer;border:none;transition:all .2s}
+.btn-primary{background:var(--orange);color:#fff}
+.btn-primary:hover{background:var(--orange2);transform:translateY(-1px)}
+.btn-primary:active{transform:translateY(0)}
+.btn-ghost{background:transparent;color:var(--ink3);border:1px solid var(--bg3)}
+.btn-ghost:hover{background:var(--bg2)}
+.step-list{width:100%;display:flex;flex-direction:column;gap:8px}
+.step-row{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--bg2);border:1px solid var(--bg3);border-radius:var(--r)}
+.step-icon{width:28px;height:28px;border-radius:50%;background:var(--orange-bg);border:1px solid var(--orange-b);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.step-name{font-size:13.5px;color:var(--ink);flex:1}
+.step-time{font-size:11px;color:var(--ink4)}
+.action-block{width:100%;background:var(--bg2);border:1px solid var(--bg3);border-radius:var(--r);padding:1.25rem;display:flex;flex-direction:column;gap:.75rem}
+.action-num{font-family:var(--serif);font-size:13px;font-weight:600;color:var(--orange);text-transform:uppercase;letter-spacing:.06em}
+.action-title{font-size:16px;font-weight:500;color:var(--ink);line-height:1.3}
+.action-body{font-size:13px;color:var(--ink3);line-height:1.65}
+/* Breathing */
+.breath-wrap{width:100%;display:flex;flex-direction:column;align-items:center;gap:1rem;padding:.5rem 0}
+.breath-stage{position:relative;width:160px;height:160px;display:flex;align-items:center;justify-content:center}
+.breath-ring{position:absolute;inset:0;border-radius:50%;border:2.5px solid rgba(0,0,0,0.2)}
+.breath-pulse{width:70px;height:70px;border-radius:50%;background:var(--orange);opacity:.18;position:absolute;transition:width .15s linear,height .15s linear}
+.breath-num{font-family:var(--serif);font-size:38px;font-weight:600;color:var(--ink);position:absolute;line-height:1;z-index:2}
+.breath-phase-lbl{font-size:14px;font-weight:500;color:var(--orange);text-align:center;min-height:20px}
+.cpip{width:9px;height:9px;border-radius:50%;border:1.5px solid var(--bg4);transition:all .3s}
+.cpip.done{background:var(--orange);border-color:var(--orange)}
+/* Gratitude */
+.grat-inputs{display:flex;flex-direction:column;gap:8px;width:100%}
+.grat-row{display:flex;align-items:center;gap:10px}
+.grat-num{font-size:13px;font-weight:500;color:var(--orange);min-width:18px}
+.grat-input{flex:1;background:var(--bg2);border:1px solid var(--bg3);border-radius:8px;padding:9px 12px;color:var(--ink);font-family:var(--sans);font-size:13px;outline:none;transition:border-color .2s}
+.grat-input:focus{border-color:var(--orange-b)}
+.grat-input::placeholder{color:var(--ink4)}
+/* Intention */
+.intent-input{width:100%;background:var(--bg2);border:1px solid var(--bg3);border-radius:var(--r);padding:12px 14px;color:var(--ink);font-family:var(--sans);font-size:13.5px;line-height:1.6;resize:none;outline:none;min-height:70px;transition:border-color .2s}
+.intent-input:focus{border-color:var(--orange-b)}
+.intent-input::placeholder{color:var(--ink4)}
+/* Gratitude timer */
+.grat-timer-section{width:100%;display:flex;flex-direction:column;align-items:center;gap:.85rem;padding:.25rem 0}
+.grat-timer-ring-big{position:relative;width:110px;height:110px}
+.grat-timer-ring-big svg{transform:rotate(-90deg)}
+.g-t-track{fill:none;stroke:var(--bg3);stroke-width:8}
+.g-t-prog{fill:none;stroke:var(--orange);stroke-width:8;stroke-linecap:round;stroke-dasharray:314;transition:stroke-dashoffset .9s linear}
+.grat-ring-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+.grat-ring-time{font-family:var(--serif);font-size:26px;font-weight:600;color:var(--ink);line-height:1}
+.grat-ring-sublbl{font-size:9px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink4)}
+.grat-timer-hint{font-size:12.5px;color:var(--ink3);text-align:center;line-height:1.65;max-width:300px;padding:0 .5rem}
+/* Week tracker */
+.week-row{display:flex;gap:6px;justify-content:center;width:100%;flex-wrap:wrap}
+.day-dot{display:flex;flex-direction:column;align-items:center;gap:4px}
+.day-circle{width:32px;height:32px;border-radius:50%;background:var(--bg3);border:1px solid var(--bg3);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--ink4);transition:all .3s}
+.day-circle.done{background:var(--orange-bg);border-color:var(--orange-b);color:var(--orange)}
+.day-circle.today{background:var(--orange);border-color:var(--orange);color:#fff}
+.day-lbl{font-size:9px;color:var(--ink4);text-transform:uppercase;letter-spacing:.04em}
+/* Success */
+.success-ring{width:64px;height:64px;border-radius:50%;background:var(--green-bg);border:1.5px solid var(--green-b);display:flex;align-items:center;justify-content:center;margin:0 auto;animation:pop .4s cubic-bezier(.17,.67,.38,1.4)}
+@keyframes pop{from{transform:scale(.5);opacity:0}to{transform:scale(1);opacity:1}}
+@media(max-width:380px){
+  .title{font-size:21px}.btn{padding:12px 16px;font-size:13.5px}
+  .breath-stage{width:140px;height:140px}.week-row{gap:4px}
+  .day-circle{width:28px;height:28px}
+}
+</style>
+</head>
+<body>
+<div id="app"><div id="root"></div></div>
+<script>
+const DAYS=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+const INTRO_QUOTES=[
+  '"Los ataques de pánico no empiezan cuando los sientes. Empiezan horas antes, cuando tu nivel base de ansiedad ya está alto. Esta rutina lo baja antes de que suba."',
+  '"La diferencia entre una persona que maneja la ansiedad y una que no, muchas veces es lo que hace en los primeros 10 minutos del día."',
+  '"No tienes que cambiar tu vida. Solo los primeros 7 minutos de tu mañana."',
+  '"Tu sistema nervioso aprende de la repetición. Cada mañana que completes esto, el siguiente ataque tiene menos espacio para crecer."',
+];
+const GRAT_TIPS=[
+  'No escribas cosas genéricas como "mi familia" o "mi salud". Escribe algo específico que puedas visualizar ahora mismo.',
+  'La gratitud específica activa el circuito de calma. "El café de esta mañana" funciona mejor que "la vida".',
+  'Piensa en algo pequeño que pasó ayer. No tiene que ser grande para activar el efecto.',
+  'Busca algo que normalmente ignoras: el silencio del cuarto, la luz que entra, que pudiste dormir.',
+];
+const BREATH_DONE_MSGS=['¡Perfecto!','¡Muy bien!','¡Excelente!','¡Lo lograste!','Bien hecho'];
+const INTENTION_PROMPTS=[
+  'Hoy quiero sentirme...',
+  'Mi intención de hoy es...',
+  'Hoy me propongo...',
+  'Lo que quiero llevar conmigo hoy es...',
+];
+const DONE_MSGS=[
+  '"Tu sistema nervioso empezó el día en modo calma, no en modo alerta."',
+  '"Hiciste lo más importante: pusiste al cuerpo primero."',
+  '"Siete minutos de inversión. Todo el día de diferencia."',
+  '"Le diste a tu cuerpo la señal correcta para empezar. Eso es todo."',
+];
+const INTENTION_EXAMPLES=[
+  '"Hoy quiero mantener la calma ante lo inesperado."',
+  '"Hoy quiero estar presente en cada conversación."',
+  '"Hoy me permito avanzar despacio."',
+  '"Hoy quiero notar las cosas pequeñas."',
+  '"Hoy respondo desde la calma, no desde el miedo."',
+];
+
+function pick(a){return Math.floor(Math.random()*a.length);}
+const S={
+  screen:'intro',step:0,
+  breathPhase:'idle',breathCount:0,cyclesDone:0,_biv:null,
+  gratitude:['','',''],intention:'',
+  iQ:0,gT:0,bD:0,iP:0,dM:0,iE:0,
+  log:JSON.parse(localStorage.getItem('bz_log')||'[]'),
+  _giv:null, gratTimerLeft:120,
+};
+function clrBiv(){if(S._biv){clearInterval(S._biv);S._biv=null;}}
+function clrGiv(){if(S._giv){clearInterval(S._giv);S._giv=null;}}
+function $(s){return document.querySelector(s);}
+function initSession(){
+  S.iQ=pick(INTRO_QUOTES); S.gT=pick(GRAT_TIPS); S.bD=pick(BREATH_DONE_MSGS);
+  S.iP=pick(INTENTION_PROMPTS); S.dM=pick(DONE_MSGS); S.iE=pick(INTENTION_EXAMPLES);
+  S.breathPhase='idle'; S.breathCount=0; S.cyclesDone=0;
+  S.gratitude=['','','']; S.intention=''; S.gratTimerLeft=120;
+}
+
+/* ═══ WEEK ═══ */
+function weekHTML(){
+  const today=new Date().getDay();
+  return`<div class="week-row">${DAYS.map((d,i)=>{
+    const isToday=i===today;
+    const done=S.log.some(e=>{ const dd=new Date(e.ts); return dd.getDay()===i&&(Date.now()-dd)<7*86400000; });
+    return`<div class="day-dot">
+      <div class="day-circle ${isToday&&done?'today':done?'done':''}">${done||isToday?'✓':''}</div>
+      <span class="day-lbl">${d}</span>
+    </div>`;
+  }).join('')}</div>`;
+}
+function calcStreak(){
+  let streak=0,d=new Date();
+  for(let i=0;i<30;i++){
+    if(S.log.some(e=>new Date(e.ts).toDateString()===d.toDateString())){streak++;d.setDate(d.getDate()-1);}
+    else break;
+  }
+  return streak;
+}
+
+/* ═══ DOTS ═══ */
+function dotsHTML(a){
+  return`<div class="dots">${[0,1,2,3].map(i=>`<div class="dot ${i<a?'done':''} ${i===a?'active':''}"></div>`).join('')}</div>`;
+}
+
+/* ═══ RENDER ═══ */
+function render(scr){ S.screen=scr; const fns={intro:introH,s0:step0H,s1:step1H,s2:step2H,s3:step3H,done:doneH}; $('#root').innerHTML=fns[scr](); bind(scr); }
+
+function introH(){return`<div class="screen">
+  <div style="height:.5rem"></div>
+  <div class="sun-wrap">🌅</div>
+  <div><p class="title">Base <em>Cero</em></p><p class="subtitle" style="margin-top:4px">Rutina matutina · 7 minutos · 4 pasos</p></div>
+  <div class="accent-card"><p>${INTRO_QUOTES[S.iQ]}</p></div>
+  <div class="step-list">
+    ${[['🌅','Hidratación intencional','1 min'],['🙏','Gratitud anclada','2 min'],['🫁','Respiración activadora','2 min'],['🎯','Intención del día','2 min']].map(([e,n,t])=>`<div class="step-row"><div class="step-icon">${e}</div><span class="step-name">${n}</span><span class="step-time">${t}</span></div>`).join('')}
+  </div>
+  ${weekHTML()}
+  <button class="btn btn-primary" id="btn-start">Iniciar mi rutina de hoy</button>
+</div>`;}
+
+function step0H(){return`<div class="screen">
+  ${dotsHTML(0)}
+  <div class="badge">Paso 1 de 4 · 1 minuto</div>
+  <div class="action-block">
+    <span class="action-num">🌅 Hidratación intencional</span>
+    <p class="action-title">Toma agua antes de cualquier otra cosa</p>
+    <p class="action-body">Tu sistema nervioso opera con agua. Después de 7-8 horas sin beber, el cortisol (hormona del estrés) sube de forma natural. Un vaso de agua al despertar lo frena antes de que empiece el día.</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <div style="flex:1;min-width:80px;text-align:center;padding:8px 4px;background:var(--orange-bg);border:1px solid var(--orange-b);border-radius:8px"><p style="font-size:11px;color:var(--orange);font-weight:500">Mínimo 1 vaso</p></div>
+      <div style="flex:1;min-width:80px;text-align:center;padding:8px 4px;background:var(--orange-bg);border:1px solid var(--orange-b);border-radius:8px"><p style="font-size:11px;color:var(--orange);font-weight:500">Sin teléfono</p></div>
+      <div style="flex:1;min-width:80px;text-align:center;padding:8px 4px;background:var(--orange-bg);border:1px solid var(--orange-b);border-radius:8px"><p style="font-size:11px;color:var(--orange);font-weight:500">En silencio</p></div>
+    </div>
+  </div>
+  <div class="belief-card"><p>Mientras lo bebes, sin noticias ni redes. 60 segundos de pausa antes de que el día empiece le dice a tu corteza prefrontal que puede activarse sin urgencia.</p></div>
+  <button class="btn btn-primary" id="btn-s0-go">Listo, tomé mi agua →</button>
+</div>`;}
+
+function step1H(){
+  const t=S.gratTimerLeft;
+  const mm=String(Math.floor(t/60)).padStart(2,'0');
+  const ss=String(t%60).padStart(2,'0');
+  const circ=314;
+  const dashoff=Math.round(circ*(t/120));
+  const running=S._giv!==null;
+  const done=t===0;
+  const filled=S.gratitude.filter(g=>g.trim().length>0).length;
+  const allFilled=filled===3;
+
+  // Ring visual
+  const ringStroke=done||running?'var(--orange)':'var(--bg4)';
+  const timeDisplay=done?'✓':running?`${mm}:${ss}`:'2:00';
+  const sublbl=done?'listo':'min';
+
+  // Hint text según estado
+  let hintText;
+  if(done)       hintText='¡2 minutos completados! El hipocampo ya procesó la experiencia.';
+  else if(running) hintText='Contempla cada agradecimiento. No tienes que hacer nada más.';
+  else if(allFilled) hintText='Cuando estés listo, activa los 2 minutos de contemplación.';
+  else             hintText=`Escribe los 3 agradecimientos para activar el timer (${filled}/3).`;
+
+  // Botón de inicio (visible solo cuando no está corriendo ni terminado)
+  let actionZone='';
+  if(!running && !done){
+    if(allFilled){
+      actionZone=`<button class="btn btn-primary" id="btn-grat-start">Activar 2 minutos de contemplación →</button>`;
+    } else {
+      actionZone=`<button class="btn btn-ghost" id="btn-grat-start" disabled style="opacity:.4;cursor:not-allowed;pointer-events:none">Activar 2 minutos de contemplación</button>`;
+    }
+  }
+
+  return`<div class="screen">
+  ${dotsHTML(1)}
+  <div class="badge">Paso 2 de 4 · 2 minutos</div>
+  <div class="action-block">
+    <span class="action-num">🙏 Gratitud anclada</span>
+    <p class="action-title">3 cosas específicas, no genéricas</p>
+    <p class="action-body">Dedicar 2 minutos a esto activa el circuito de recompensa del cerebro antes de que el día lo inunde con estresores. No es filosofía — el hipocampo procesa la gratitud de la misma forma que los recuerdos positivos, reduciendo la activación amigdalar.</p>
+  </div>
+  <div class="info-box"><p>💡 ${GRAT_TIPS[S.gT]}</p></div>
+  <div class="grat-inputs" id="grat-grid">
+    ${[0,1,2].map(i=>`<div class="grat-row"><span class="grat-num">${i+1}</span><input class="grat-input" type="text" placeholder="Hoy agradezco..." value="${S.gratitude[i]||''}" data-gi="${i}"></div>`).join('')}
+  </div>
+  <div class="grat-timer-section">
+    <div class="grat-timer-ring-big">
+      <svg width="110" height="110" viewBox="0 0 110 110">
+        <circle class="g-t-track" cx="55" cy="55" r="50"/>
+        <circle class="g-t-prog" id="grat-t-prog" cx="55" cy="55" r="50"
+          stroke-dashoffset="${dashoff}" style="stroke:${ringStroke}"/>
+      </svg>
+      <div class="grat-ring-inner">
+        <span class="grat-ring-time" id="grat-ring-time">${timeDisplay}</span>
+        <span class="grat-ring-sublbl" id="grat-ring-sublbl">${sublbl}</span>
+      </div>
+    </div>
+    <p class="grat-timer-hint" id="grat-timer-hint">${hintText}</p>
+  </div>
+  <div id="grat-action-zone" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:6px">
+    ${actionZone}
+  </div>
+  <button class="btn ${done?'btn-primary':'btn-ghost'}" id="btn-s1-go">Continuar →</button>
+</div>`;
+}
+
+function step2H(){
+  const phaseLbl=S.cyclesDone>=3?BREATH_DONE_MSGS[S.bD]:(S.breathPhase==='idle'?'Toca iniciar cuando estés listo':{inhale:'Inhala...',hold:'Sostén...',exhale:'Exhala...'}[S.breathPhase]||'');
+  let sz=70;
+  if(S.breathPhase==='inhale') sz=70+(80*(4-S.breathCount)/4);
+  if(S.breathPhase==='hold')   sz=150;
+  if(S.breathPhase==='exhale') sz=150-(80*((8-S.breathCount)/8));
+  const showInfo=S.breathPhase==='idle'&&S.cyclesDone===0;
+  return`<div class="screen">
+  ${dotsHTML(2)}
+  <div class="badge">Paso 3 de 4 · 2 minutos</div>
+  <div class="action-block">
+    <span class="action-num">🫁 Respiración activadora</span>
+    <p class="action-title">Calibra tu sistema nervioso para el día</p>
+    <p class="action-body">Esta variación matutina (4-7-8) activa el nervio vago y baja el cortisol <em>antes</em> de que entres a cualquier actividad estresante. Hacerlo de forma preventiva — no cuando ya llegó el pánico — es 3 veces más efectivo.</p>
+    <div style="display:flex;gap:6px">
+      ${[['4','Inhala'],['7','Sostén'],['8','Exhala']].map(([n,l])=>`<div style="flex:1;text-align:center;padding:7px 4px;background:var(--orange-bg);border:1px solid var(--orange-b);border-radius:8px"><p style="font-size:13px;font-weight:600;color:var(--orange)">${n}</p><p style="font-size:10px;color:var(--ink3)">${l}</p></div>`).join('')}
+    </div>
+  </div>
+  <div class="breath-wrap">
+    <div id="breath-info" class="info-box" style="${showInfo?'':'display:none'}">
+      <p>3 ciclos son suficientes para bajar el nivel de cortisol matutino. La exhalación larga (8 segundos) activa el nervio vago — el sistema de freno de tu cuerpo.</p>
+    </div>
+    <div class="breath-stage">
+      <div class="breath-ring"></div>
+      <div class="breath-pulse" id="bpulse" style="width:${Math.round(sz)}px;height:${Math.round(sz)}px"></div>
+      <div class="breath-num" id="bnum">${S.breathPhase!=='idle'&&S.breathCount>0?S.breathCount:''}</div>
+    </div>
+    <p class="breath-phase-lbl" id="bphase">${phaseLbl}</p>
+    <div style="display:flex;gap:8px">${[0,1,2].map(i=>`<div class="cpip ${i<S.cyclesDone?'done':''}"></div>`).join('')}</div>
+    <p style="font-size:11px;color:var(--ink4)" id="cycle-lbl">Ciclos: ${S.cyclesDone} de 3</p>
+  </div>
+  <div id="breath-btn-area">
+    ${S.cyclesDone>=3?`<button class="btn btn-primary" id="btn-s2-go">Continuar →</button>`:S.breathPhase==='idle'?`<button class="btn btn-primary" id="btn-breath-start">${S.cyclesDone===0?'Iniciar respiración':'Siguiente ciclo'}</button>`:''}
+  </div>
+</div>`;}
+
+function step3H(){return`<div class="screen">
+  ${dotsHTML(3)}
+  <div class="badge">Paso 4 de 4 · 2 minutos</div>
+  <div class="action-block">
+    <span class="action-num">🎯 Intención del día</span>
+    <p class="action-title">Una frase, no una lista</p>
+    <p class="action-body">No es una agenda. Es cómo quieres sentirte hoy. Una sola intención le da dirección al día sin generar la presión de productividad que activa el sistema de alerta.</p>
+  </div>
+  <div style="width:100%">
+    <label style="font-size:11px;color:var(--ink4);letter-spacing:.06em;text-transform:uppercase;display:block;margin-bottom:8px">Mi intención de hoy</label>
+    <textarea class="intent-input" id="intent-txt" placeholder="${INTENTION_PROMPTS[S.iP]}" rows="3">${S.intention}</textarea>
+  </div>
+  <div class="info-box">
+    <p style="font-size:11.5px;color:var(--ink4)">Ejemplo: ${INTENTION_EXAMPLES[S.iE]}</p>
+  </div>
+  <button class="btn btn-primary" id="btn-finish">Terminar mi rutina ✓</button>
+</div>`;}
+
+function doneH(){
+  const streak=calcStreak();
+  return`<div class="screen">
+  <div style="height:.5rem"></div>
+  <div class="success-ring"><svg viewBox="0 0 32 32" fill="none"><path d="M8 16L13 21L24 11" stroke="#3a7d44" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  <p class="title">Rutina completada 🌅</p>
+  <p class="body-text">${DONE_MSGS[S.dM]}</p>
+  ${S.intention?`<div class="accent-card"><p>"${S.intention}"</p></div>`:''}
+  <div class="card">
+    <p style="font-size:12.5px;font-weight:500;color:var(--ink);margin-bottom:10px">Tu semana</p>
+    ${weekHTML()}
+    ${streak>1?`<p style="font-size:12px;color:var(--orange);text-align:center;margin-top:10px;font-weight:500">${streak} días seguidos 🔥</p>`:''}
+    <p style="font-size:11px;color:var(--ink4);text-align:center;margin-top:8px;line-height:1.5">Los días de la semana se actualizan cada lunes. Tu racha se guarda aunque empieces una semana nueva.</p>
+  </div>
+  <div class="card">
+    <p style="font-size:12.5px;font-weight:500;color:var(--ink);margin-bottom:8px">Para mantener el efecto</p>
+    ${['Hazla antes de revisar el teléfono.','Si un día no puedes hacerla completa, haz solo la respiración.','La consistencia importa más que la perfección.'].map(t=>`<div style="display:flex;gap:10px;padding:5px 0;border-bottom:1px solid var(--bg3)"><span style="color:var(--orange)">·</span><span style="font-size:12.5px;color:var(--ink3);line-height:1.5">${t}</span></div>`).join('')}
+  </div>
+  <button class="btn btn-primary" id="btn-restart">Repetir mañana →</button>
+  <div style="height:.5rem"></div>
+</div>`;}
+
+/* ═══ GRATITUDE TIMER ═══ */
+function startGratTimer(){
+  clrGiv();
+  if(S.gratTimerLeft<=0) return;
+  // Inmediatamente pasar a estado "running" en el DOM
+  updateGratTimerDOM(true);
+  S._giv=setInterval(()=>{
+    S.gratTimerLeft=Math.max(0,S.gratTimerLeft-1);
+    updateGratTimerDOM(false);
+    if(S.gratTimerLeft===0){ clrGiv(); }
+  },1000);
+}
+function updateGratTimerDOM(justStarted){
+  const t=S.gratTimerLeft;
+  const mm=String(Math.floor(t/60)).padStart(2,'0');
+  const ss=String(t%60).padStart(2,'0');
+  const circ=314;
+  const dashoff=Math.round(circ*(t/120));
+  const running=S._giv!==null||justStarted;
+  const done=t===0;
+  // Ring progress
+  const prog=$('#grat-t-prog');
+  if(prog){
+    prog.setAttribute('stroke-dashoffset',dashoff);
+    prog.style.stroke=done||running?'var(--orange)':'var(--bg4)';
+  }
+  // Time display
+  const tim=$('#grat-ring-time');
+  if(tim) tim.textContent=done?'✓':`${mm}:${ss}`;
+  const sublbl=$('#grat-ring-sublbl');
+  if(sublbl) sublbl.textContent=done?'listo':'min';
+  // Hint text
+  const hint=$('#grat-timer-hint');
+  if(hint) hint.textContent=done
+    ?'¡2 minutos completados! El hipocampo ya procesó la experiencia.'
+    :'Contempla cada agradecimiento. No tienes que hacer nada más.';
+  // Ocultar botón de inicio cuando el timer corre o termina
+  if(justStarted){
+    const az=$('#grat-action-zone'); if(az) az.innerHTML='';
+  }
+  // Continuar button
+  const btn=$('#btn-s1-go');
+  if(btn) btn.className=done?'btn btn-primary':'btn btn-ghost';
+}
+
+/* ═══ BREATHING ENGINE (4-7-8) ═══ */
+function startBreath(){
+  clrBiv();
+  let phase='inhale', secs=4;
+  S.breathPhase=phase; S.breathCount=secs;
+  const bba=$('#breath-btn-area'); if(bba) bba.innerHTML='';
+  const bi=$('#breath-info'); if(bi) bi.style.display='none';
+  updateBreathDOM();
+  S._biv=setInterval(()=>{
+    secs--;
+    if(secs>0){ S.breathCount=secs; updateBreathDOM(); return; }
+    if(phase==='inhale')     { phase='hold'; secs=7; }
+    else if(phase==='hold')  { phase='exhale'; secs=8; }
+    else {
+      S.cyclesDone++;
+      updateBreathDOM();
+      if(S.cyclesDone>=3){ clrBiv(); S.breathPhase='idle'; S.breathCount=0; showBreathDone(); return; }
+      phase='inhale'; secs=4;
+    }
+    S.breathPhase=phase; S.breathCount=secs;
+    updateBreathDOM();
+  },1000);
+}
+
+function updateBreathDOM(){
+  const bp=$('#bpulse'),bn=$('#bnum'),bph=$('#bphase'),cl=$('#cycle-lbl');
+  if(!bp) return;
+  const lbls={inhale:'Inhala...',hold:'Sostén...',exhale:'Exhala...'};
+  if(bn) bn.textContent=S.breathCount>0?S.breathCount:'';
+  if(bph) bph.textContent=lbls[S.breathPhase]||'';
+  let sz=70;
+  if(S.breathPhase==='inhale') sz=70+(80*(4-S.breathCount)/4);
+  if(S.breathPhase==='hold')   sz=150;
+  if(S.breathPhase==='exhale') sz=150-(80*((8-S.breathCount)/8));
+  bp.style.width=Math.round(sz)+'px'; bp.style.height=Math.round(sz)+'px';
+  document.querySelectorAll('.cpip').forEach((p,i)=>p.className='cpip'+(i<S.cyclesDone?' done':''));
+  if(cl) cl.textContent='Ciclos: '+S.cyclesDone+' de 3';
+}
+
+function showBreathDone(){
+  const bph=$('#bphase'); if(bph) bph.textContent=BREATH_DONE_MSGS[S.bD];
+  const bn=$('#bnum'); if(bn) bn.textContent='';
+  document.querySelectorAll('.cpip').forEach(p=>p.className='cpip done');
+  const cl=$('#cycle-lbl'); if(cl) cl.textContent='Ciclos: 3 de 3';
+  const bba=$('#breath-btn-area');
+  if(bba){
+    bba.innerHTML=`<button class="btn btn-primary" id="btn-s2-go">Continuar →</button>`;
+    $('#btn-s2-go').addEventListener('click',()=>{ clrBiv(); render('s3'); });
+  }
+}
+
+/* ═══ BIND ═══ */
+function bind(scr){
+  const on=(id,fn)=>{const el=$(id);if(el)el.addEventListener('click',fn);};
+  if(scr==='intro') on('#btn-start',()=>render('s0'));
+  if(scr==='s0')    on('#btn-s0-go',()=>render('s1'));
+  if(scr==='s1'){
+    const gg=$('#grat-grid');
+    if(gg) gg.addEventListener('input',e=>{
+      const inp=e.target.closest('input'); if(!inp) return;
+      S.gratitude[parseInt(inp.dataset.gi)]=inp.value;
+      // Solo actualizar botón y hint — sin auto-start
+      if(S._giv===null && S.gratTimerLeft===120){
+        const filled=S.gratitude.filter(g=>g.trim().length>0).length;
+        const allFilled=filled===3;
+        const az=$('#grat-action-zone');
+        if(az){
+          if(allFilled){
+            az.innerHTML=`<button class="btn btn-primary" id="btn-grat-start">Activar 2 minutos de contemplación →</button>`;
+            on('#btn-grat-start', startGratTimer);
+          } else {
+            az.innerHTML=`<button class="btn btn-ghost" id="btn-grat-start" disabled style="opacity:.4;cursor:not-allowed;pointer-events:none">Activar 2 minutos de contemplación</button>`;
+          }
+        }
+        const hint=$('#grat-timer-hint');
+        if(hint) hint.textContent=allFilled
+          ?'Cuando estés listo, activa los 2 minutos de contemplación.'
+          :`Escribe los 3 agradecimientos para activar el timer (${filled}/3).`;
+      }
+    });
+    // Botón de inicio manual
+    on('#btn-grat-start', startGratTimer);
+    on('#btn-s1-go',()=>{ clrGiv(); render('s2'); });
+    // Si vuelve al paso con timer ya iniciado y tiempo restante, reanudar
+    if(S._giv===null && S.gratTimerLeft>0 && S.gratTimerLeft<120) startGratTimer();
+  }
+  if(scr==='s2'){
+    on('#btn-breath-start',startBreath);
+    on('#btn-s2-go',()=>{ clrBiv(); render('s3'); });
+  }
+  if(scr==='s3'){
+    const it=$('#intent-txt'); if(it) it.addEventListener('input',e=>S.intention=e.target.value);
+    on('#btn-finish',()=>{
+      S.log.unshift({ts:Date.now()});
+      if(S.log.length>90) S.log.pop();
+      try{localStorage.setItem('bz_log',JSON.stringify(S.log));}catch(e){}
+      render('done');
+    });
+  }
+  if(scr==='done') on('#btn-restart',()=>{ clrBiv(); clrGiv(); initSession(); render('intro'); });
+}
+
+initSession(); render('intro');
+</script>
+</body>
+</html>
