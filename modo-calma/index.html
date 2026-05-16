@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modo Calma — Protocolo Anti-Pánico</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #0d1117;
+    --bg2:       #161c25;
+    --bg3:       #1e2733;
+    --border:    rgba(255,255,255,0.08);
+    --border2:   rgba(255,255,255,0.14);
+    --text:      #e8edf3;
+    --text2:     #8b96a5;
+    --text3:     #4e5a68;
+    --teal:      #16c98d;
+    --teal-dim:  rgba(22,201,141,0.12);
+    --teal-mid:  rgba(22,201,141,0.22);
+    --teal-dark: #0a6e4c;
+    --teal-text: #0f9466;
+    --r:         12px;
+    --r-sm:      8px;
+    --sans:      'DM Sans', system-ui, sans-serif;
+    --serif:     'DM Serif Display', Georgia, serif;
+  }
+
+  html, body {
+    min-height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 2rem 1rem 3rem;
+    min-height: 100vh;
+  }
+
+  #app {
+    width: 100%;
+    max-width: 400px;
+  }
+
+  /* ── Screens ── */
+  .screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+    animation: fadeUp .35s ease;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Logo mark ── */
+  .logomark {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: var(--teal-dim);
+    border: 1px solid rgba(22,201,141,0.25);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto;
+  }
+  .logomark svg { width: 26px; height: 26px; }
+
+  /* ── Typography ── */
+  .title {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text);
+    text-align: center;
+    line-height: 1.3;
+  }
+  .subtitle {
+    font-size: 12px;
+    color: var(--text3);
+    text-align: center;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+  .body-text {
+    font-size: 14px;
+    color: var(--text2);
+    text-align: center;
+    line-height: 1.7;
+  }
+
+  /* ── Step badge ── */
+  .step-badge {
+    font-size: 11px;
+    color: var(--teal);
+    background: var(--teal-dim);
+    border: 1px solid rgba(22,201,141,0.2);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-weight: 500;
+    letter-spacing: .04em;
+  }
+
+  /* ── Dots ── */
+  .dots {
+    display: flex; gap: 6px; justify-content: center;
+  }
+  .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    transition: all .3s;
+  }
+  .dot.done { background: rgba(22,201,141,0.4); border-color: rgba(22,201,141,0.4); }
+  .dot.active { background: var(--teal); border-color: var(--teal); }
+
+  /* ── Cards ── */
+  .card {
+    width: 100%;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 1rem 1.25rem;
+  }
+  .accent-card {
+    width: 100%;
+    background: var(--teal-dim);
+    border: 1px solid rgba(22,201,141,0.22);
+    border-radius: var(--r);
+    padding: 1.25rem;
+    text-align: center;
+  }
+  .accent-card .quote-text {
+    font-size: 15px;
+    font-weight: 500;
+    color: #a8f5d8;
+    line-height: 1.75;
+  }
+  .belief-card {
+    width: 100%;
+    background: var(--bg2);
+    border-left: 2.5px solid var(--teal);
+    border-radius: 0 var(--r-sm) var(--r-sm) 0;
+    padding: 1rem 1.25rem;
+  }
+  .belief-card p {
+    font-size: 14px;
+    color: var(--text2);
+    line-height: 1.7;
+    font-style: italic;
+  }
+
+  /* ── Buttons ── */
+  .btn {
+    width: 100%;
+    padding: 14px 20px;
+    border-radius: var(--r-sm);
+    font-family: var(--sans);
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all .2s;
+  }
+  .btn-primary {
+    background: var(--teal);
+    color: #051a10;
+  }
+  .btn-primary:hover { background: #1ae09e; }
+  .btn-primary:active { transform: scale(.98); }
+  .btn-ghost {
+    background: transparent;
+    color: var(--text2);
+    border: 1px solid var(--border2);
+  }
+  .btn-ghost:hover { background: var(--bg3); }
+
+  /* ── Progress ── */
+  .progress-wrap {
+    width: 100%;
+    height: 3px;
+    background: var(--bg3);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 3px;
+    background: var(--teal);
+    border-radius: 2px;
+    transition: width .4s ease;
+  }
+
+  /* ── Step list in intro ── */
+  .step-list { width: 100%; display: flex; flex-direction: column; gap: 10px; }
+  .step-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 14px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+  }
+  .step-num {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--teal-dim);
+    border: 1px solid rgba(22,201,141,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 600; color: var(--teal);
+    flex-shrink: 0;
+  }
+  .step-name { font-size: 14px; color: var(--text); flex: 1; }
+  .step-time { font-size: 11px; color: var(--text3); }
+
+  /* ── Breathing ── */
+  .breath-wrap {
+    display: flex; flex-direction: column; align-items: center; gap: 1.25rem;
+    padding: .5rem 0;
+    width: 100%;
+  }
+  .breath-stage {
+    position: relative;
+    width: 160px; height: 160px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .breath-bg {
+    position: absolute; inset: 0; border-radius: 50%;
+    border: 2.5px solid rgba(255,255,255,0.55);
+  }
+  .breath-pulse {
+    width: 80px; height: 80px; border-radius: 50%;
+    background: var(--teal);
+    opacity: .18;
+    transition: width .1s, height .1s;
+    position: absolute;
+  }
+  .breath-inner {
+    position: absolute;
+    text-align: center;
+    z-index: 2;
+  }
+  .breath-num {
+    font-size: 36px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1;
+  }
+  .breath-phase-lbl {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--teal);
+    text-align: center;
+    height: 20px;
+  }
+  .cycle-dots { display: flex; gap: 10px; }
+  .cpip {
+    width: 10px; height: 10px; border-radius: 50%;
+    border: 1.5px solid rgba(255,255,255,0.35);
+    transition: background .3s, border-color .3s;
+  }
+  .cpip.done { background: #ffffff; border-color: #ffffff; }
+  .cycle-label { font-size: 12px; color: var(--text3); }
+
+  /* ── Senses ── */
+  .sense-section { width: 100%; }
+  .sense-group-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--text3);
+    font-weight: 600;
+    margin-bottom: 6px;
+    padding-left: 2px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .sense-items { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+  .sense-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 14px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    cursor: pointer;
+    transition: border-color .2s, background .2s;
+    user-select: none;
+  }
+  .sense-item:hover { border-color: var(--border2); }
+  .sense-item.checked {
+    border-color: rgba(22,201,141,0.35);
+    background: var(--teal-dim);
+  }
+  .sense-check {
+    width: 20px; height: 20px; border-radius: 50%;
+    border: 1.5px solid var(--border2);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: all .2s;
+    color: transparent;
+    font-size: 11px;
+  }
+  .sense-item.checked .sense-check {
+    background: var(--teal);
+    border-color: var(--teal);
+    color: #051a10;
+  }
+  .sense-lbl { font-size: 13px; color: var(--text); }
+
+  /* ── Move ── */
+  .move-opts { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+  .move-opt {
+    padding: 12px 16px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    cursor: pointer;
+    font-family: var(--sans);
+    font-size: 14px;
+    color: var(--text);
+    text-align: left;
+    transition: all .2s;
+  }
+  .move-opt:hover { border-color: var(--border2); }
+  .move-opt.selected { border-color: var(--teal); background: var(--teal-dim); }
+
+  /* ── Timer ring ── */
+  .timer-wrap {
+    position: relative;
+    width: 130px; height: 130px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .timer-svg { transform: rotate(-90deg); }
+  .t-track { fill: none; stroke: var(--bg3); stroke-width: 6; }
+  .t-prog  { fill: none; stroke: var(--teal); stroke-width: 6; stroke-linecap: round;
+             stroke-dasharray: 339; transition: stroke-dashoffset .5s linear; }
+  .timer-num {
+    position: absolute;
+    font-size: 30px; font-weight: 600; color: var(--text);
+    line-height: 1;
+  }
+
+  /* ── Success ── */
+  .success-ring {
+    width: 68px; height: 68px; border-radius: 50%;
+    background: var(--teal-dim);
+    border: 1.5px solid rgba(22,201,141,.35);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto;
+    animation: popIn .4s cubic-bezier(.17,.67,.38,1.4);
+  }
+  @keyframes popIn {
+    from { transform: scale(.5); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+  }
+  .success-ring svg { width: 32px; height: 32px; }
+
+  /* ── Emergency card ── */
+  .ec-row {
+    display: flex; gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    align-items: flex-start;
+  }
+  .ec-row:last-child { border-bottom: none; }
+  .ec-num { font-size: 12px; font-weight: 600; color: var(--teal); min-width: 14px; }
+  .ec-step { font-size: 12px; font-weight: 500; color: var(--text); min-width: 58px; }
+  .ec-desc { font-size: 12px; color: var(--text2); line-height: 1.5; }
+
+  /* ── Separator ── */
+  .sep { width: 100%; height: 1px; background: var(--border); }
+</style>
+</head>
+<body>
+<div id="app"><div id="root"></div></div>
+
+<script>
+const S = {
+  screen:'intro', breathPhase:'idle', breathCount:0, cyclesDone:0,
+  senseChecked:{}, moveSelected:null, moveTimeLeft:60, moveRunning:false,
+  _iv:null, ph1:0, ph3:0, ph5:0, ph2done:0,
+  movePool:[], sensePool:[], sessionStart:0,
+  usageLog: JSON.parse(localStorage.getItem('mc_log')||'[]')
+};
+
+function clrIv(){ if(S._iv){ clearInterval(S._iv); S._iv=null; } }
+
+const PH1 = [
+  `"Esto es un ataque de pánico.<br>No me voy a morir.<br>Mi cuerpo está respondiendo<br>a una alarma falsa.<br>Va a pasar."`,
+  `"Lo que siento es real,<br>pero no es peligroso.<br>Es mi cuerpo reaccionando<br>sin que haya amenaza.<br>Puedo atravesar esto."`,
+  `"Ya me ha pasado antes<br>y siempre ha pasado.<br>Mi corazón late fuerte<br>pero está bien.<br>Voy a estar bien."`,
+  `"Esto es ansiedad, no peligro.<br>Mi cerebro activó una alarma falsa.<br>No necesito huir.<br>Solo necesito esperar<br>a que pase."`
+];
+const PH3 = [
+  `El pánico te lleva al futuro: <em>"¿qué me pasará?"</em>. Tus sentidos solo existen en el presente. Al activarlos, cambias el foco de tu cerebro y cortas el ciclo del miedo.`,
+  `Cuando entras en pánico, tu mente se desconecta del aquí y ahora. Forzarla a procesar información sensorial real la ancla al momento presente y reduce la activación del sistema de alarma.`,
+  `La técnica 5-4-3-2-1 interrumpe el pensamiento catastrófico activando partes del cerebro que no pueden funcionar al mismo tiempo que el pánico. Es una interrupción neurológica, no solo distracción.`,
+  `Tu sistema nervioso entra en pánico porque cree que hay una amenaza. Darle información sensorial concreta del entorno le demuestra que estás a salvo. Es la forma más rápida de decirle a tu cerebro: "aquí no hay peligro".`
+];
+const PH5 = [
+  `"Lo detuve.<br>Pasó.<br>Mi cuerpo funcionó exactamente<br>como tenía que funcionar."`,
+  `"Lo atravesé.<br>Usé una herramienta<br>y funcionó.<br>Cada vez que lo hago<br>me vuelvo más fuerte."`,
+  `"Estoy aquí.<br>Estoy bien.<br>Usé el protocolo<br>y mi sistema nervioso<br>respondió."`,
+  `"Pasó.<br>No me venció.<br>Tengo una herramienta<br>que funciona.<br>Voy a estar bien."`
+];
+function pick(arr){ return Math.floor(Math.random()*arr.length); }
+const PH2_DONE=['¡Bien hecho!','¡Lo lograste!','¡Excelente!','Muy bien hecho','¡Eso es todo!','¡Lo conseguiste!'];
+
+const ALL_SENSES={
+  VES:[
+    {id:'v1',lbl:'Ve algo que está frente a ti'},
+    {id:'v2',lbl:'Ve algo de color vivo o brillante'},
+    {id:'v3',lbl:'Ve algo pequeño cerca de ti'},
+    {id:'v4',lbl:'Ve algo que esté en movimiento'},
+    {id:'v5',lbl:'Ve tus propias manos'},
+    {id:'v6',lbl:'Ve algo con textura rugosa o lisa'},
+    {id:'v7',lbl:'Ve algo de color oscuro en el cuarto'},
+    {id:'v8',lbl:'Ve algo que refleje luz'},
+  ],
+  TOCAS:[
+    {id:'t1',lbl:'Toca la superficie donde estás'},
+    {id:'t2',lbl:'Toca tu ropa o tela cercana'},
+    {id:'t3',lbl:'Toca algo frío o caliente'},
+    {id:'t4',lbl:'Toca tu propio rostro con las manos'},
+    {id:'t5',lbl:'Frota las palmas entre sí con fuerza'},
+    {id:'t6',lbl:'Aprieta y suelta los dedos de una mano'},
+    {id:'t7',lbl:'Toca algo con una textura que puedas describir'},
+  ],
+  OYES:[
+    {id:'s1',lbl:'Escucha el sonido más lejano que puedas'},
+    {id:'s2',lbl:'Escucha tu propia respiración'},
+    {id:'s3',lbl:'Escucha el sonido más cercano a ti'},
+    {id:'s4',lbl:'Escucha si hay silencio o ruido de fondo'},
+    {id:'s5',lbl:'Escucha si hay algún sonido rítmico'},
+  ],
+  HUELES:[
+    {id:'o1',lbl:'Huele el aire donde estás'},
+    {id:'o2',lbl:'Huele tu ropa o tu piel'},
+    {id:'o3',lbl:'Respira profundo e identifica un olor'},
+    {id:'o4',lbl:'Huele algo cercano que puedas alcanzar'},
+  ],
+  SABORES:[
+    {id:'g1',lbl:'Siente el sabor actual en tu boca'},
+    {id:'g2',lbl:'Pasa la lengua por los labios y nota la sensación'},
+    {id:'g3',lbl:'Traga saliva y nota el movimiento'},
+  ],
+};
+const sh=a=>a.slice().sort(()=>Math.random()-.5);
+function pickSenses(){
+  return [
+    ...sh(ALL_SENSES.VES).slice(0,5).map(s=>({...s,g:'VES'})),
+    ...sh(ALL_SENSES.TOCAS).slice(0,4).map(s=>({...s,g:'TOCAS'})),
+    ...sh(ALL_SENSES.OYES).slice(0,3).map(s=>({...s,g:'OYES'})),
+    ...sh(ALL_SENSES.HUELES).slice(0,2).map(s=>({...s,g:'HUELES'})),
+    ...sh(ALL_SENSES.SABORES).slice(0,1).map(s=>({...s,g:'SABORES'})),
+  ];
+}
+
+const ALL_MOVES=[
+  {id:'walk',   lbl:'Caminar en círculos rápido durante 60 seg'},
+  {id:'fist',   lbl:'Apretar y soltar los puños con fuerza x20'},
+  {id:'muscle', lbl:'Contraer y soltar todos los músculos del cuerpo'},
+  {id:'jump',   lbl:'Saltar en el lugar durante 60 segundos'},
+  {id:'shake',  lbl:'Sacudir brazos y piernas con fuerza'},
+  {id:'march',  lbl:'Marchar levantando las rodillas en el lugar'},
+  {id:'arms',   lbl:'Girar los brazos hacia atrás 20 veces'},
+  {id:'stomp',  lbl:'Pisar fuerte el piso alternando cada pie'},
+  {id:'squeeze',lbl:'Apretar fuerte un cojín o ropa con ambas manos'},
+];
+function pickMoves(){ return ALL_MOVES.slice().sort(()=>Math.random()-.5).slice(0,3); }
+
+const GROUPS=[
+  {k:'VES',    label:'5 ves',     icon:'👁'},
+  {k:'TOCAS',  label:'4 tocas',   icon:'✋'},
+  {k:'OYES',   label:'3 oyes',    icon:'👂'},
+  {k:'HUELES', label:'2 hueles',  icon:'🌬'},
+  {k:'SABORES',label:'1 sabores', icon:'👅'},
+];
+
+function $(s){ return document.querySelector(s); }
+function render(scr){
+  S.screen=scr;
+  const html={
+    intro:  introHTML,
+    s1:     step1HTML,
+    s2:     step2HTML,
+    s3:     step3HTML,
+    s4:     step4HTML,
+    s5:     step5HTML,
+    done:   doneHTML,
+  }[scr];
+  $('#root').innerHTML = html();
+  bind(scr);
+}
+
+function dotsHTML(active){
+  return `<div class="dots">${[0,1,2,3,4].map(i=>
+    `<div class="dot ${i<active?'done':''} ${i===active?'active':''}"></div>`
+  ).join('')}</div>`;
+}
+
+function introHTML(){ return `<div class="screen">
+  <div style="height:.5rem"></div>
+  <div class="logomark">
+    <svg viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M13 3C13 3 6 7 6 13.5C6 17.642 9.134 21 13 21C16.866 21 20 17.642 20 13.5C20 7 13 3 13 3Z" stroke="#16c98d" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M10 14L12 16L16 11" stroke="#16c98d" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+  <div>
+    <p class="title">Modo Calma</p>
+    <p class="subtitle" style="margin-top:4px">Protocolo anti-pánico · 5 pasos</p>
+  </div>
+  <div class="belief-card">
+    <p>"Tu cuerpo activó una alarma sin que haya peligro real. No te vas a morir. Solo necesitas interrumpir el ciclo. Eso es exactamente lo que hace este protocolo."</p>
+  </div>
+  <div class="step-list">
+    ${[['1','Nombra lo que pasa','30 seg'],['2','Respira (4-7-8)','3-4 min'],['3','Ancla tus sentidos','2 min'],['4','Mueve tu cuerpo','1 min'],['5','Confirma que pasó','30 seg']].map(([n,t,d])=>`
+    <div class="step-row">
+      <div class="step-num">${n}</div>
+      <span class="step-name">${t}</span>
+      <span class="step-time">${d}</span>
+    </div>`).join('')}
+  </div>
+  <button class="btn btn-primary" id="btn-start">Empezar ahora</button>
+</div>`; }
+
+function step1HTML(){ return `<div class="screen">
+  ${dotsHTML(0)}
+  <div class="step-badge">Paso 1 de 5 · 30 segundos</div>
+  <p class="title" style="font-size:19px">Nombra lo que está pasando</p>
+  <p class="body-text">Di esto en voz alta o en tu mente,<br>con toda la firmeza que puedas:</p>
+  <div class="accent-card">
+    <p class="quote-text">${PH1[S.ph1]}</p>
+  </div>
+  <div class="card">
+    <p style="font-size:13px;color:#8b96a5;line-height:1.7">Nombrarlo activa tu mente racional y detiene la espiral de <em>"¿qué me está pasando?"</em>. No elimina el miedo de inmediato — pero interrumpe el ciclo.</p>
+  </div>
+  <button class="btn btn-primary" id="btn-s1">Ya lo dije, continuar</button>
+</div>`; }
+
+function step2HTML(){
+  const phaseLbl = S.cyclesDone>=4 ? PH2_DONE[S.ph2done||0] : ({idle:'Listo para empezar', inhale:'Inhala…', hold:'Sostén…', exhale:'Exhala lento…'}[S.breathPhase]||'');
+  const pct = S.breathPhase==='inhale'? (4-S.breathCount)/4 : S.breathPhase==='hold'? (7-S.breathCount)/7 : S.breathPhase==='exhale'? (8-S.breathCount)/8 : 0;
+  const pulseSize = S.breathPhase==='hold'? 160 : S.breathPhase==='exhale'? Math.round(80 + 80*(1-pct)) : Math.round(80 + 80*pct);
+  return `<div class="screen">
+  ${dotsHTML(1)}
+  <div class="step-badge">Paso 2 de 5 · Respiración 4-7-8</div>
+  <p class="title" style="font-size:19px">Activa tu freno natural</p>
+  <div class="breath-wrap">
+    <div class="breath-stage">
+      <div class="breath-bg"></div>
+      <div class="breath-pulse" id="bpulse" style="width:${pulseSize}px;height:${pulseSize}px"></div>
+      <div class="breath-inner">
+        <div class="breath-num" id="bnum">${S.breathCount>0?S.breathCount:''}</div>
+      </div>
+    </div>
+    <p class="breath-phase-lbl" id="bphase">${phaseLbl}</p>
+    <div class="cycle-dots">${[0,1,2,3].map(i=>`<div class="cpip ${i<S.cyclesDone?'done':''}"></div>`).join('')}</div>
+    <p class="cycle-label">Ciclos: ${S.cyclesDone} de 4</p>
+  </div>
+  ${S.breathPhase==='idle'&&S.cyclesDone===0?`<div class="card" id="breath-tip"><p style="font-size:13px;color:#8b96a5;line-height:1.7">Exhala siempre <em>más largo</em> que la inhalación. Eso activa el nervio vago — el freno natural de tu sistema nervioso.</p></div>`:''}
+  <div id="breath-btn-area">
+    ${S.breathPhase==='idle'&&S.cyclesDone<4? `<button class="btn btn-primary" id="btn-breath-go">${S.cyclesDone===0?'Iniciar respiración':'Siguiente ciclo'}</button>` :''}
+    ${S.cyclesDone>=4? `<button class="btn btn-primary" id="btn-s2">Continuar al paso 3</button>` :''}
+  </div>
+</div>`; }
+
+function step3HTML(){
+  const total = Object.values(S.senseChecked).filter(Boolean).length;
+  const pct = Math.round(total/15*100);
+  return `<div class="screen">
+  ${dotsHTML(2)}
+  <div class="step-badge">Paso 3 de 5 · Ancla tus sentidos</div>
+  <p class="title" style="font-size:19px">Tráete al presente</p>
+  <div class="belief-card">
+    <p style="font-style:normal;font-size:13px;color:#8b96a5;line-height:1.7">${PH3[S.ph3]}</p>
+  </div>
+  <div style="position:sticky;top:0;background:#0d1117;padding:.5rem 0 .75rem;z-index:5;width:100%">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <p style="font-size:13px;color:#8b96a5">Marca cada uno cuando lo hayas hecho</p>
+      <p style="font-size:13px;font-weight:600;color:#16c98d" id="sense-counter">${total}/15</p>
+    </div>
+    <div class="progress-wrap"><div class="progress-fill" id="sense-bar" style="width:${pct}%"></div></div>
+  </div>
+  <div class="sense-section" id="sense-grid">
+    ${GROUPS.map(g=>{
+      const items=S.sensePool.filter(s=>s.g===g.k);
+      return `<div>
+        <div class="sense-group-label">${g.icon} ${g.label}</div>
+        <div class="sense-items">
+          ${items.map(s=>`<div class="sense-item ${S.senseChecked[s.id]?'checked':''}" data-id="${s.id}">
+            <div class="sense-check">${S.senseChecked[s.id]?'✓':''}</div>
+            <span class="sense-lbl">${s.lbl}</span>
+          </div>`).join('')}
+        </div>
+      </div>`;
+    }).join('')}
+  </div>
+  ${total>=15
+    ? `<div id="sense-btn-area"><button class="btn btn-primary" id="btn-s3">Continuar al paso 4</button></div>`
+    : `<div id="sense-btn-area"><button class="btn btn-ghost" id="btn-s3-skip">Saltar este paso</button></div>`}
+</div>`; }
+
+function timerSectionHTML(){
+  if(!S.moveSelected) return `
+    <p style="font-size:12px;color:#4e5a68;text-align:center;padding:.25rem 0">Elige una actividad primero</p>
+    <button class="btn btn-ghost" id="btn-s4-skip" style="width:100%">Omitir este paso</button>`;
+  const t=S.moveTimeLeft, dashoff=Math.round(339*(1-(60-t)/60));
+  const btnHTML = t===0
+    ? `<button class="btn btn-primary" id="btn-s4-done">¡Listo! Continuar</button>`
+    : S.moveRunning
+      ? `<button class="btn btn-ghost" id="btn-move-pause">⏸ Pausar</button>`
+      : `<button class="btn btn-primary" id="btn-move-go">▶ ${t===60?'Iniciar 60 segundos':'Continuar'}</button>
+         ${t<60?`<button class="btn btn-ghost" id="btn-s4-skip" style="margin-top:6px">Omitir este paso</button>`:''}`;
+  return `<div class="timer-wrap">
+    <svg width="130" height="130" class="timer-svg">
+      <circle class="t-track" cx="65" cy="65" r="54"/>
+      <circle class="t-prog" id="t-prog" cx="65" cy="65" r="54" stroke-dashoffset="${dashoff}"/>
+    </svg>
+    <div class="timer-num" id="timer-num">${t}</div>
+  </div>
+  <div id="timer-btn-area" style="width:100%;display:flex;flex-direction:column;gap:0">${btnHTML}</div>`;
+}
+
+function step4HTML(){
+  const locked = S.moveRunning;
+  return `<div class="screen">
+  ${dotsHTML(3)}
+  <div class="step-badge">Paso 4 de 5 · Mueve tu cuerpo</div>
+  <p class="title" style="font-size:19px">Consume la adrenalina</p>
+  <p class="body-text">Tu cuerpo produjo energía de emergencia.<br>60 segundos de movimiento la libera.</p>
+  <div class="move-opts" id="move-opts-area">
+    ${S.movePool.map(m=>`<button class="move-opt ${S.moveSelected===m.id?'selected':''}" data-move="${m.id}" ${S.moveRunning&&S.moveSelected!==m.id?'disabled style="opacity:.35;pointer-events:none"':''}>${m.lbl}</button>`).join('')}
+  </div>
+  <div id="move-timer-section" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:.75rem">${timerSectionHTML()}</div>
+</div>`; }
+
+function step5HTML(){ return `<div class="screen">
+  ${dotsHTML(4)}
+  <div class="step-badge">Paso 5 de 5 · 30 segundos</div>
+  <p class="title" style="font-size:19px">Confirma que pasó</p>
+  <p class="body-text">Di esto en voz alta:</p>
+  <div class="accent-card">
+    <p class="quote-text">${PH5[S.ph5]}</p>
+  </div>
+  <div class="card">
+    <p style="font-size:13px;color:#8b96a5;line-height:1.7">Este paso reprograma el final del episodio: de <em>"sobreviví algo terrible"</em> a <em>"usé una herramienta y funcionó."</em> Con el tiempo, tu cerebro anticipa que siempre hay salida.</p>
+  </div>
+  <button class="btn btn-primary" id="btn-s5">Ya lo dije</button>
+</div>`; }
+
+function doneHTML(){
+  const log = S.usageLog;
+  // Group entries by date
+  const grouped = [];
+  const seen = {};
+  log.forEach(e=>{
+    if(!seen[e.date]){
+      seen[e.date] = {date:e.date, count:0, total:0};
+      grouped.push(seen[e.date]);
+    }
+    seen[e.date].count++;
+    const d = parseInt(e.dur)||0;
+    seen[e.date].total += d;
+  });
+  const todayStr = new Date().toLocaleDateString('es-MX',{day:'numeric',month:'short',year:'numeric'});
+  const totalUsos = log.length;
+
+  const logHTML = grouped.length===0 ? '' : `
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+      <p style="font-size:13px;font-weight:600;color:#e8edf3">📋 Registro de usos</p>
+      <span style="font-size:11px;color:#4e5a68">${totalUsos} uso${totalUsos!==1?'s':''}</span>
+    </div>
+    ${grouped.slice(0,7).map(g=>{
+      const isToday = g.date===todayStr;
+      const avgMin  = g.count>0 ? Math.round(g.total/g.count) : 0;
+      return `<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.06)">
+        <div style="width:36px;flex-shrink:0">
+          ${isToday?`<span style="font-size:10px;background:rgba(22,201,141,.15);color:#16c98d;padding:2px 6px;border-radius:10px;white-space:nowrap">hoy</span>`:''}
+        </div>
+        <span style="font-size:12px;color:#8b96a5;flex:1">${g.date}</span>
+        <span style="font-size:11px;color:#4e5a68;white-space:nowrap">${g.count} uso${g.count!==1?'s':''} · ~${avgMin} min</span>
+      </div>`;
+    }).join('')}
+    <div style="margin-top:12px;padding:10px 12px;background:rgba(255,255,255,0.03);border-radius:8px;border:1px solid rgba(255,255,255,0.05)">
+      <p style="font-size:11px;color:#4e5a68;line-height:1.6">💡 Este registro se guarda en este navegador y dispositivo. Si abres el protocolo en otro teléfono o computadora, el historial empezará desde cero — esto es normal y no significa que perdiste tu progreso real.</p>
+    </div>
+  </div>`;
+  return `<div class="screen">
+  <div style="height:.5rem"></div>
+  <div class="success-ring">
+    <svg viewBox="0 0 32 32" fill="none"><path d="M8 16L13 21L24 11" stroke="#16c98d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </div>
+  <p class="title">Protocolo completado</p>
+  <p class="body-text">Lo usaste. Eso es todo lo que necesitabas hacer.</p>
+  <div class="accent-card">
+    <p class="quote-text" style="font-size:14px">"Cada vez que lo uses, funciona más rápido. Tu sistema nervioso está aprendiendo que siempre tiene salida."</p>
+  </div>
+  ${logHTML}
+  <div class="card" style="gap:.5rem">
+    <p style="font-size:13px;font-weight:600;color:#e8edf3;margin-bottom:8px">Tarjeta de emergencia</p>
+    ${[['1','Nombra','Esto es pánico. No me voy a morir.'],
+       ['2','Respira','4 inhala · 7 sostén · 8 exhala'],
+       ['3','Ancla','5 ves · 4 tocas · 3 oyes · 2 hueles · 1 sabores'],
+       ['4','Mueve','60 segundos de movimiento físico'],
+       ['5','Confirma','Lo detuve. Pasó.']
+      ].map(([n,t,d])=>`<div class="ec-row">
+        <span class="ec-num">${n}</span>
+        <span class="ec-step">${t}</span>
+        <span class="ec-desc">${d}</span>
+      </div>`).join('')}
+  </div>
+  <button class="btn btn-primary" id="btn-restart">Usar el protocolo de nuevo</button>
+  <div style="height:.5rem"></div>
+</div>`; }
+
+/* ── Breathing engine ── */
+function startBreath(){
+  clrIv();
+  let phase='inhale', count=4;
+  S.breathPhase=phase; S.breathCount=count; updateBreathUI();
+  S._iv=setInterval(()=>{
+    count--;
+    if(count>0){ S.breathCount=count; updateBreathUI(); return; }
+    if(phase==='inhale'){ phase='hold'; count=7; }
+    else if(phase==='hold'){ phase='exhale'; count=8; }
+    else {
+      S.cyclesDone++;
+      if(S.cyclesDone>=4){ clrIv(); S.breathPhase='idle'; S.breathCount=0; S.ph2done=pick(PH2_DONE); render('s2'); return; }
+      phase='inhale'; count=4;
+    }
+    S.breathPhase=phase; S.breathCount=count; updateBreathUI();
+  },1000);
+}
+
+function updateBreathUI(){
+  const bnum=$('#bnum'), bphase=$('#bphase'), bpulse=$('#bpulse');
+  if(!bnum) return;
+  const labels={inhale:'Inhala…',hold:'Sostén…',exhale:'Exhala lento…'};
+  bnum.textContent = S.breathCount>0 ? S.breathCount : '';
+  bphase.textContent = labels[S.breathPhase]||'';
+  let size=80;
+  if(S.breathPhase==='inhale')  size=80+(80*(4-S.breathCount)/4);
+  if(S.breathPhase==='hold')    size=160;
+  if(S.breathPhase==='exhale')  size=160-(80*((8-S.breathCount)/8));
+  bpulse.style.width = Math.round(size)+'px';
+  bpulse.style.height= Math.round(size)+'px';
+  document.querySelectorAll('.cpip').forEach((pip,i)=>{
+    pip.className = 'cpip' + (i < S.cyclesDone ? ' done' : '');
+  });
+  const cl = document.querySelector('.cycle-label');
+  if(cl) cl.textContent = 'Ciclos: '+S.cyclesDone+' de 4';
+  // Hide tip card while breathing
+  const tip = document.getElementById('breath-tip');
+  if(tip) tip.style.display = S.breathPhase==='idle' ? '' : 'none';
+  // Manage button area
+  const bba = document.getElementById('breath-btn-area');
+  if(!bba) return;
+  if(S.breathPhase !== 'idle'){
+    bba.innerHTML = '';
+  } else if(S.cyclesDone>=4){
+    bba.innerHTML = `<button class="btn btn-primary" id="btn-s2">Continuar al paso 3</button>`;
+    document.getElementById('btn-s2').addEventListener('click',()=>{ clrIv(); render('s3'); });
+  } else {
+    bba.innerHTML = `<button class="btn btn-primary" id="btn-breath-go">${S.cyclesDone===0?'Iniciar respiración':'Siguiente ciclo'}</button>`;
+    document.getElementById('btn-breath-go').addEventListener('click', startBreath);
+  }
+}
+
+/* ── Move timer ── */
+function refreshTimerSection(){
+  const ts = document.getElementById('move-timer-section');
+  if(ts) ts.innerHTML = timerSectionHTML();
+}
+
+function updateTimerUI(){
+  const prog = document.getElementById('t-prog');
+  const num  = document.getElementById('timer-num');
+  const area = document.getElementById('timer-btn-area');
+  if(!prog||!num||!area) return;
+  const t = S.moveTimeLeft;
+  prog.setAttribute('stroke-dashoffset', Math.round(339*(1-(60-t)/60)));
+  num.textContent = t;
+  // Only replace button area when the state changes — prevents hover flicker during ticking
+  if(t===0 && !area.querySelector('#btn-s4-done')){
+    area.innerHTML=`<button class="btn btn-primary" id="btn-s4-done">¡Listo! Continuar</button>`;
+  } else if(S.moveRunning && !area.querySelector('#btn-move-pause')){
+    area.innerHTML=`<button class="btn btn-ghost" id="btn-move-pause">⏸ Pausar</button>`;
+  } else if(!S.moveRunning && t>0 && !area.querySelector('#btn-move-go')){
+    area.innerHTML=`<button class="btn btn-primary" id="btn-move-go">▶ Continuar</button>
+      <button class="btn btn-ghost" id="btn-s4-skip" style="margin-top:6px">Omitir este paso</button>`;
+  }
+}
+
+function startMove(){
+  clrIv(); S.moveRunning=true;
+  refreshTimerSection();
+  document.querySelectorAll('.move-opt').forEach(b=>{
+    if(b.dataset.move!==S.moveSelected){ b.style.opacity='.35'; b.style.pointerEvents='none'; }
+    b.disabled=true;
+  });
+  S._iv=setInterval(()=>{
+    S.moveTimeLeft--;
+    if(S.moveTimeLeft<=0){ S.moveTimeLeft=0; S.moveRunning=false; clrIv(); }
+    updateTimerUI();
+  },1000);
+}
+
+/* ── Bind ── */
+function bind(scr){
+  const on=(id,fn)=>{ const el=$(id); if(el) el.addEventListener('click',fn); };
+  if(scr==='intro') on('#btn-start',()=>{ S.ph1=pick(PH1); S.sessionStart=Date.now(); render('s1'); });
+  if(scr==='s1') on('#btn-s1',()=>{ S.breathPhase='idle'; S.breathCount=0; S.cyclesDone=0; S.ph3=pick(PH3); S.movePool=pickMoves(); S.sensePool=pickSenses(); S.senseChecked={}; render('s2'); });
+  if(scr==='s2'){
+    on('#btn-breath-go',()=>startBreath());
+    on('#btn-s2',()=>{ clrIv(); render('s3'); });
+  }
+  if(scr==='s3'){
+    // Event delegation on sense grid — no re-render on click
+    const grid = document.getElementById('sense-grid');
+    if(grid) grid.addEventListener('click', e=>{
+      const item = e.target.closest('.sense-item');
+      if(!item) return;
+      const id = item.dataset.id;
+      S.senseChecked[id] = !S.senseChecked[id];
+      item.classList.toggle('checked', !!S.senseChecked[id]);
+      item.querySelector('.sense-check').textContent = S.senseChecked[id]?'✓':'';
+      const total = Object.values(S.senseChecked).filter(Boolean).length;
+      const counter = document.getElementById('sense-counter');
+      const bar     = document.getElementById('sense-bar');
+      const btnArea = document.getElementById('sense-btn-area');
+      if(counter) counter.textContent = total+'/15';
+      if(bar)     bar.style.width = Math.round(total/15*100)+'%';
+      if(btnArea){
+        if(total>=15){
+          btnArea.innerHTML=`<button class="btn btn-primary" id="btn-s3">Continuar al paso 4</button>`;
+        } else {
+          btnArea.innerHTML=`<button class="btn btn-ghost" id="btn-s3-skip">Saltar este paso</button>`;
+        }
+      }
+    });
+    // Event delegation on button area
+    const ba = document.getElementById('sense-btn-area');
+    if(ba) ba.addEventListener('click', e=>{
+      const btn = e.target.closest('button');
+      if(!btn) return;
+      S.moveSelected=null; S.moveTimeLeft=60; render('s4');
+    });
+  }
+  if(scr==='s4'){
+    // Event delegation on move options — no re-render on selection
+    const mo = document.getElementById('move-opts-area');
+    if(mo) mo.addEventListener('click', e=>{
+      const btn = e.target.closest('button');
+      if(!btn || S.moveRunning) return;
+      S.moveSelected = btn.dataset.move;
+      document.querySelectorAll('.move-opt').forEach(b=>b.classList.toggle('selected', b.dataset.move===S.moveSelected));
+      refreshTimerSection();
+    });
+    // Event delegation on timer section — single stable listener, no double-binding
+    const ts = document.getElementById('move-timer-section');
+    if(ts) ts.addEventListener('click', e=>{
+      const btn = e.target.closest('button');
+      if(!btn) return;
+      if(btn.id==='btn-move-go')    { startMove(); }
+      if(btn.id==='btn-move-pause') { clrIv(); S.moveRunning=false; updateTimerUI(); }
+      if(btn.id==='btn-s4-done')    { clrIv(); S.ph5=pick(PH5); render('s5'); }
+      if(btn.id==='btn-s4-skip')    { clrIv(); S.ph5=pick(PH5); render('s5'); }
+    });
+  }
+  if(scr==='s5') on('#btn-s5',()=>{
+    // Save usage log entry
+    const dur = Math.round((Date.now()-S.sessionStart)/1000/60);
+    S.usageLog.unshift({date: new Date().toLocaleDateString('es-MX',{day:'numeric',month:'short',year:'numeric'}), dur: dur<1?'<1':dur});
+    if(S.usageLog.length>20) S.usageLog.pop();
+    try{ localStorage.setItem('mc_log', JSON.stringify(S.usageLog)); }catch(e){}
+    render('done');
+  });
+  if(scr==='done') on('#btn-restart',()=>{
+    clrIv();
+    Object.assign(S,{screen:'intro',breathPhase:'idle',breathCount:0,cyclesDone:0,senseChecked:{},moveSelected:null,moveTimeLeft:60,moveRunning:false,_iv:null,ph1:pick(PH1),ph3:pick(PH3),ph5:pick(PH5),ph2done:0,movePool:pickMoves(),sensePool:pickSenses(),sessionStart:Date.now()});
+    render('intro');
+  });
+}
+
+S.movePool = pickMoves();
+S.sensePool = pickSenses();
+S.ph1=pick(PH1); S.ph3=pick(PH3); S.ph5=pick(PH5);
+render('intro');
+</script>
+</body>
+</html>
