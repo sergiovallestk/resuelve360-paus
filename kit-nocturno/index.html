@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kit Nocturno — Ritual anti-pánico para la noche</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Syne:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080a12;--bg2:#0e1120;--bg3:#151828;
+  --border:rgba(160,140,255,0.10);--border2:rgba(160,140,255,0.20);
+  --text:#e8e4f5;--text2:#9b94b8;--text3:#524c6e;
+  --lav:#a08cff;--lav-dim:rgba(160,140,255,0.10);--lav-soft:#c4b8ff;
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --sans:'Syne',system-ui,sans-serif;
+  --r:12px;
+}
+html,body{min-height:100%;font-family:var(--sans);-webkit-font-smoothing:antialiased}
+body{
+  background:var(--bg);color:var(--text);font-size:16px;line-height:1.6;
+  display:flex;flex-direction:column;align-items:center;
+  padding:1.5rem 1rem 4rem;min-height:100vh;overflow-x:hidden;position:relative;
+}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(1px 1px at 12% 18%,rgba(255,255,255,.5) 0%,transparent 100%),
+  radial-gradient(1px 1px at 55% 14%,rgba(255,255,255,.3) 0%,transparent 100%),
+  radial-gradient(1px 1px at 78%  6%,rgba(255,255,255,.5) 0%,transparent 100%),
+  radial-gradient(1px 1px at  7% 42%,rgba(255,255,255,.3) 0%,transparent 100%),
+  radial-gradient(2px 2px at 68% 72%,rgba(160,140,255,.3) 0%,transparent 100%),
+  radial-gradient(1px 1px at 33%  7%,rgba(255,255,255,.4) 0%,transparent 100%),
+  radial-gradient(1px 1px at 91% 22%,rgba(255,255,255,.4) 0%,transparent 100%),
+  radial-gradient(1px 1px at 25% 65%,rgba(255,255,255,.3) 0%,transparent 100%),
+  radial-gradient(1px 1px at 44% 88%,rgba(106,155,232,.25) 0%,transparent 100%);}
+body::after{content:'';position:fixed;top:-30%;left:50%;transform:translateX(-50%);
+  width:700px;height:400px;border-radius:50%;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse,rgba(100,80,200,.12) 0%,transparent 70%);}
+#app{position:relative;z-index:1;width:100%;max-width:400px}
+.screen{display:flex;flex-direction:column;align-items:center;gap:1.15rem;animation:fadeUp .4s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.moon-wrap{width:60px;height:60px;border-radius:50%;background:var(--lav-dim);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;margin:0 auto;font-size:26px}
+.title{font-family:var(--serif);font-size:26px;font-weight:600;color:var(--text);text-align:center;line-height:1.25}
+.title em{font-style:italic;color:var(--lav-soft)}
+.subtitle{font-size:11px;color:var(--text3);text-align:center;letter-spacing:.06em;text-transform:uppercase}
+.body-text{font-size:13.5px;color:var(--text2);text-align:center;line-height:1.75}
+.badge{font-size:11px;font-weight:500;color:var(--lav);background:var(--lav-dim);border:1px solid var(--border2);padding:4px 12px;border-radius:20px;letter-spacing:.04em}
+.dots{display:flex;gap:6px;justify-content:center}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--bg3);border:1px solid var(--border2);transition:all .3s}
+.dot.done{background:rgba(160,140,255,.35);border-color:rgba(160,140,255,.35)}
+.dot.active{background:var(--lav);border-color:var(--lav)}
+.card{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:1.1rem 1.25rem}
+.accent-card{width:100%;background:var(--lav-dim);border:1px solid var(--border2);border-radius:var(--r);padding:1.25rem;text-align:center}
+.accent-card p{font-family:var(--serif);font-size:18px;font-weight:500;color:var(--lav-soft);line-height:1.7;font-style:italic}
+.info-card{width:100%;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:var(--r);padding:.9rem 1.1rem}
+.info-card p{font-size:12.5px;color:var(--text3);line-height:1.7}
+.progress-wrap{width:100%;height:3px;background:var(--bg3);border-radius:2px;overflow:hidden}
+.progress-fill{height:3px;background:var(--lav);border-radius:2px;transition:width .4s ease}
+.btn{width:100%;padding:13px 20px;border-radius:var(--r);font-family:var(--sans);font-size:14.5px;font-weight:600;cursor:pointer;border:none;transition:all .2s}
+.btn-primary{background:var(--lav);color:#0a0814}
+.btn-primary:hover{background:var(--lav-soft);transform:translateY(-1px)}
+.btn-primary:active{transform:translateY(0)}
+.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border2)}
+.btn-ghost:hover{background:var(--bg3)}
+.step-list{width:100%;display:flex;flex-direction:column;gap:8px}
+.step-row{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r)}
+.step-icon{width:28px;height:28px;border-radius:50%;background:var(--lav-dim);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.step-name{font-size:13.5px;color:var(--text);flex:1}
+.step-time{font-size:11px;color:var(--text3)}
+.checklist{display:flex;flex-direction:column;gap:8px;width:100%}
+.check-item{display:flex;align-items:flex-start;gap:12px;padding:11px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;transition:border-color .2s,background .2s;user-select:none}
+.check-item:hover{border-color:var(--border2)}
+.check-item.checked{border-color:rgba(160,140,255,.35);background:var(--lav-dim)}
+.check-box{width:20px;height:20px;border-radius:5px;border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;transition:all .2s;font-size:11px;color:transparent}
+.check-item.checked .check-box{background:var(--lav);border-color:var(--lav);color:#0a0814}
+.check-lbl{font-size:13px;color:var(--text);line-height:1.5}
+.check-sub{font-size:11px;color:var(--text3);margin-top:2px;line-height:1.4}
+.breath-wrap{width:100%;display:flex;flex-direction:column;align-items:center;gap:1rem;padding:.5rem 0}
+.breath-stage{position:relative;width:160px;height:160px;display:flex;align-items:center;justify-content:center}
+.breath-ring{position:absolute;inset:0;border-radius:50%;border:2.5px solid rgba(255,255,255,0.55)}
+.breath-pulse{width:70px;height:70px;border-radius:50%;background:var(--lav);opacity:.18;position:absolute;transition:width .15s linear,height .15s linear}
+.breath-num{font-size:36px;font-weight:600;color:var(--text);position:absolute;line-height:1;z-index:2}
+.breath-phase-lbl{font-size:14px;font-weight:500;color:var(--lav);text-align:center;min-height:20px}
+.cpip{width:10px;height:10px;border-radius:50%;border:1.5px solid rgba(255,255,255,.3);transition:all .3s}
+.cpip.done{background:#fff;border-color:#fff}
+.sound-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%}
+.sound-opt{padding:11px 8px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;font-family:var(--sans);font-size:12px;color:var(--text2);text-align:center;transition:all .2s;line-height:1.4;display:flex;flex-direction:column;align-items:center;gap:4px;user-select:none}
+.sound-opt:hover{border-color:var(--border2)}
+.sound-opt.selected{border-color:rgba(160,140,255,.4);background:var(--lav-dim);color:var(--lav-soft)}
+.sound-opt .s-icon{font-size:18px}
+.player-bar{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:.9rem 1rem;display:flex;flex-direction:column;gap:.6rem}
+.player-top{display:flex;align-items:center;justify-content:space-between}
+.player-name{font-size:13px;font-weight:500;color:var(--lav-soft)}
+.player-status{font-size:11px;color:var(--text3)}
+.volume-row{display:flex;align-items:center;gap:8px}
+.volume-lbl{font-size:11px;color:var(--text3);min-width:50px}
+input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:4px;border-radius:2px;background:var(--bg3);outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--lav);cursor:pointer}
+.timer-wrap{position:relative;width:120px;height:120px;display:flex;align-items:center;justify-content:center;margin:0 auto}
+.timer-svg{transform:rotate(-90deg)}
+.t-track{fill:none;stroke:var(--bg3);stroke-width:6}
+.t-prog{fill:none;stroke:var(--lav);stroke-width:6;stroke-linecap:round;stroke-dasharray:339}
+.timer-num{position:absolute;font-size:28px;font-weight:600;color:var(--text);line-height:1}
+.journal-input{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;color:var(--text);font-family:var(--sans);font-size:13.5px;line-height:1.6;resize:none;outline:none;min-height:80px;transition:border-color .2s}
+.journal-input:focus{border-color:rgba(160,140,255,.35)}
+.journal-input::placeholder{color:var(--text3)}
+.success-ring{width:64px;height:64px;border-radius:50%;background:var(--lav-dim);border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;margin:0 auto;animation:pop .4s cubic-bezier(.17,.67,.38,1.4)}
+@keyframes pop{from{transform:scale(.5);opacity:0}to{transform:scale(1);opacity:1}}
+@media(max-width:380px){
+  .title{font-size:22px}.btn{padding:12px 16px;font-size:13.5px}
+  .breath-stage{width:140px;height:140px}.sound-opt{font-size:11px;padding:9px 6px}
+}
+</style>
+</head>
+<body>
+<div id="app"><div id="root"></div></div>
+<script>
+const INTRO_QUOTES=[
+  '"La noche no tiene que ser el enemigo. Este ritual le dice a tu cuerpo que puede soltar la guardia."',
+  '"No tienes que apagar todos los pensamientos. Solo darle a tu sistema nervioso el permiso de descansar."',
+  '"Cada noche que completes este ritual, tu cuerpo aprende un poco más a confiar en el descanso."',
+  '"El silencio no activa la ansiedad. La activa no saber qué hacer en el silencio."',
+  '"Hoy fue un día. Ya terminó. Lo que queda pendiente puede esperar hasta mañana."',
+];
+const BREATH_DONE_MSGS=['¡Muy bien!','¡Excelente!','¡Lo lograste!','¡Perfecto!','Bien hecho'];
+const JOURNAL_PROMPTS=[
+  '¿Qué es lo que más da vueltas en tu cabeza ahora mismo?',
+  '¿Qué necesitarías escuchar para sentirte bien esta noche?',
+  '¿Qué fue lo mejor que pasó hoy, por pequeño que sea?',
+  '¿Qué estarías pensando si supieras que esta noche vas a dormir bien?',
+  '¿Hay algo que puedes soltar esta noche y retomar mañana?',
+  '¿Qué necesita tu cuerpo escuchar antes de descansar?',
+];
+const DONE_MSGS=[
+  '"Tu cuerpo recibió la señal. Puedes soltar la guardia ahora."',
+  '"Hiciste lo que necesitabas. El resto lo hace tu cuerpo solo."',
+  '"Cada noche que eliges este ritual, el siguiente ataque tiene menos espacio para crecer."',
+  '"Le dijiste a tu sistema nervioso que el día terminó. Eso es todo lo que necesitaba escuchar."',
+  '"No tienes que resolver nada esta noche. Ya hiciste suficiente."',
+];
+const PREPARE_POOL=[
+  {id:'p1',lbl:'Pon el teléfono boca abajo o en modo avión',sub:'Las notificaciones activan el sistema de alerta'},
+  {id:'p2',lbl:'Baja el brillo de cualquier pantalla al mínimo',sub:'La luz azul le dice a tu cerebro que es de día'},
+  {id:'p3',lbl:'Cúbrete con algo, aunque no tengas frío',sub:'El peso y el calor activan la respuesta de calma'},
+  {id:'p4',lbl:'Si puedes, ventila el cuarto unos minutos',sub:'El aire fresco reduce la sensación de encierro'},
+  {id:'p5',lbl:'Cierra los ojos 30 segundos antes de continuar',sub:'Le dices a tu sistema nervioso que el día terminó'},
+  {id:'p6',lbl:'Suelta los hombros conscientemente',sub:'La tensión acumulada ahí alimenta el sistema de alerta'},
+  {id:'p7',lbl:'Toma un vaso de agua antes de continuar',sub:'La deshidratación aumenta la frecuencia cardíaca'},
+  {id:'p8',lbl:'Aleja cualquier reloj de tu vista',sub:'Ver la hora activa la presión de "debo estar dormido ya"'},
+  {id:'p9',lbl:'Afloja la mandíbula — notarás que estaba tensa',sub:'La mandíbula apretada es una señal física de alerta'},
+  {id:'p10',lbl:'Apaga o atenúa todas las luces del cuarto',sub:'La oscuridad le indica al cerebro que es hora de melatonina'},
+];
+const ALL_SOUNDS=[
+  {id:'lluvia',name:'Lluvia suave',icon:'🌧',type:'rain'},
+  {id:'ventilador',name:'Ventilador',icon:'🌀',type:'fan'},
+  {id:'blanco',name:'Ruido blanco',icon:'〰️',type:'white'},
+  {id:'oleaje',name:'Oleaje',icon:'🌊',type:'ocean'},
+  {id:'bosque',name:'Brisa de bosque',icon:'🌿',type:'forest'},
+  {id:'rio',name:'Río tranquilo',icon:'💧',type:'river'},
+  {id:'fuego',name:'Fuego suave',icon:'🔥',type:'fire'},
+  {id:'viento',name:'Viento suave',icon:'💨',type:'wind'},
+];
+function sh(a){return a.slice().sort(()=>Math.random()-.5);}
+function pick(arr){return Math.floor(Math.random()*arr.length);}
+
+const S={
+  screen:'intro',
+  preparePool:[],prepareChecked:{},
+  breathPhase:'idle',breathCount:0,cyclesDone:0,
+  soundPool:[],soundSelected:null,soundPlaying:false,
+  timerLeft:60,timerRunning:false,
+  journalText:'',
+  iQ:0,bDone:0,jP:0,dM:0,
+  _biv:null,_tiv:null,
+  log:JSON.parse(localStorage.getItem('kn_log')||'[]'),
+};
+
+function clrBiv(){if(S._biv){clearInterval(S._biv);S._biv=null;}}
+function clrTiv(){if(S._tiv){clearInterval(S._tiv);S._tiv=null;}}
+function clrAll(){clrBiv();clrTiv();}
+function $(s){return document.querySelector(s);}
+
+function initSession(){
+  S.preparePool=sh(PREPARE_POOL).slice(0,5);
+  S.prepareChecked={};
+  S.soundPool=sh(ALL_SOUNDS).slice(0,6);
+  S.iQ=pick(INTRO_QUOTES); S.bDone=pick(BREATH_DONE_MSGS);
+  S.jP=pick(JOURNAL_PROMPTS); S.dM=pick(DONE_MSGS);
+  S.breathPhase='idle'; S.breathCount=0; S.cyclesDone=0;
+  S.soundSelected=null; S.soundPlaying=false;
+  S.timerLeft=60; S.timerRunning=false; S.journalText='';
+  stopAudio();
+}
+
+/* ═══ WEB AUDIO ENGINE ═══ */
+let _actx=null,_masterG=null,_nodes=[];
+function getCtx(){
+  if(!_actx){
+    _actx=new(window.AudioContext||window.webkitAudioContext)();
+    _masterG=_actx.createGain(); _masterG.gain.value=0.35;
+    _masterG.connect(_actx.destination);
+  }
+  if(_actx.state==='suspended')_actx.resume();
+  return _actx;
+}
+function makeBrownNoise(ctx){
+  const buf=ctx.createBuffer(1,ctx.sampleRate*3,ctx.sampleRate);
+  const d=buf.getChannelData(0);
+  let b0=0,b1=0,b2=0,b3=0,b4=0,b5=0;
+  for(let i=0;i<d.length;i++){
+    const w=Math.random()*2-1;
+    b0=.99886*b0+w*.0555179; b1=.99332*b1+w*.0750759;
+    b2=.96900*b2+w*.1538520; b3=.86650*b3+w*.3104856;
+    b4=.55000*b4+w*.5329522; b5=-.7616*b5-w*.0168980;
+    d[i]=(b0+b1+b2+b3+b4+b5+w*.5362)*0.11;
+  }
+  return buf;
+}
+function makeWhiteNoise(ctx){
+  const buf=ctx.createBuffer(1,ctx.sampleRate*3,ctx.sampleRate);
+  const d=buf.getChannelData(0);
+  for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1;
+  return buf;
+}
+function stopAudio(){
+  _nodes.forEach(n=>{try{n.stop();}catch(e){}});
+  _nodes=[];
+  if(_masterG) _masterG.gain.setTargetAtTime(0,getCtx().currentTime,.1);
+  S.soundPlaying=false;
+}
+function playAudio(type){
+  stopAudio();
+  const ctx=getCtx();
+  _masterG.gain.setTargetAtTime(0,ctx.currentTime,.05);
+  _masterG.gain.setTargetAtTime(0.35,ctx.currentTime+.15,.5);
+  const useBrown=['rain','fan','ocean','forest','fire','wind'].includes(type);
+  const buf=useBrown?makeBrownNoise(ctx):makeWhiteNoise(ctx);
+  const src=ctx.createBufferSource(); src.buffer=buf; src.loop=true;
+  _nodes.push(src);
+  switch(type){
+    case'rain':{
+      const f1=ctx.createBiquadFilter(); f1.type='bandpass'; f1.frequency.value=1200; f1.Q.value=0.6;
+      const f2=ctx.createBiquadFilter(); f2.type='highpass'; f2.frequency.value=600;
+      const lfo=ctx.createOscillator(); lfo.frequency.value=2.5;
+      const lg=ctx.createGain(); lg.gain.value=0.06;
+      lfo.connect(lg); lg.connect(_masterG.gain); lfo.start(); _nodes.push(lfo);
+      src.connect(f1); f1.connect(f2); f2.connect(_masterG); break;}
+    case'fan':{
+      const f=ctx.createBiquadFilter(); f.type='lowpass'; f.frequency.value=200; f.Q.value=2;
+      const lfo=ctx.createOscillator(); lfo.frequency.value=20;
+      const lg=ctx.createGain(); lg.gain.value=25;
+      lfo.connect(lg); lg.connect(f.frequency); lfo.start(); _nodes.push(lfo);
+      src.connect(f); f.connect(_masterG); break;}
+    case'white':
+      src.connect(_masterG); break;
+    case'ocean':{
+      const f=ctx.createBiquadFilter(); f.type='bandpass'; f.frequency.value=380; f.Q.value=0.4;
+      const lfo=ctx.createOscillator(); lfo.frequency.value=0.1;
+      const lfoF=ctx.createGain(); lfoF.gain.value=280;
+      lfo.connect(lfoF); lfoF.connect(f.frequency); lfo.start();
+      const alfo=ctx.createOscillator(); alfo.frequency.value=0.1;
+      const ag=ctx.createGain(); ag.gain.value=0.22;
+      alfo.connect(ag); ag.connect(_masterG.gain); alfo.start();
+      _nodes.push(lfo,alfo);
+      src.connect(f); f.connect(_masterG); break;}
+    case'forest':{
+      const f=ctx.createBiquadFilter(); f.type='bandpass'; f.frequency.value=900; f.Q.value=1.5;
+      const lfo=ctx.createOscillator(); lfo.frequency.value=0.35;
+      const lg=ctx.createGain(); lg.gain.value=0.15;
+      lfo.connect(lg); lg.connect(_masterG.gain); lfo.start(); _nodes.push(lfo);
+      src.connect(f); f.connect(_masterG); break;}
+    case'river':{
+      const f1=ctx.createBiquadFilter(); f1.type='bandpass'; f1.frequency.value=700; f1.Q.value=0.9;
+      const f2=ctx.createBiquadFilter(); f2.type='highpass'; f2.frequency.value=350;
+      const lfo=ctx.createOscillator(); lfo.frequency.value=1.6;
+      const lg=ctx.createGain(); lg.gain.value=0.08;
+      lfo.connect(lg); lg.connect(_masterG.gain); lfo.start(); _nodes.push(lfo);
+      src.connect(f1); f1.connect(f2); f2.connect(_masterG); break;}
+    case'fire':{
+      const f=ctx.createBiquadFilter(); f.type='lowpass'; f.frequency.value=450;
+      const lfo=ctx.createOscillator(); lfo.frequency.value=0.9;
+      const lg=ctx.createGain(); lg.gain.value=0.12;
+      lfo.connect(lg); lg.connect(_masterG.gain); lfo.start(); _nodes.push(lfo);
+      src.connect(f); f.connect(_masterG); break;}
+    case'wind':{
+      const f=ctx.createBiquadFilter(); f.type='bandpass'; f.frequency.value=550; f.Q.value=0.3;
+      const lfo=ctx.createOscillator(); lfo.frequency.value=0.18;
+      const lfoF=ctx.createGain(); lfoF.gain.value=220;
+      lfo.connect(lfoF); lfoF.connect(f.frequency); lfo.start();
+      const alfo=ctx.createOscillator(); alfo.frequency.value=0.18;
+      const ag=ctx.createGain(); ag.gain.value=0.18;
+      alfo.connect(ag); ag.connect(_masterG.gain); alfo.start();
+      _nodes.push(lfo,alfo);
+      src.connect(f); f.connect(_masterG); break;}
+    default: src.connect(_masterG);
+  }
+  src.start(); S.soundPlaying=true;
+}
+function setVol(v){if(_masterG) _masterG.gain.setTargetAtTime(v,getCtx().currentTime,.05);}
+
+/* ═══ HTML BUILDERS ═══ */
+function dotsHTML(a){
+  return`<div class="dots">${[0,1,2,3].map(i=>`<div class="dot ${i<a?'done':''} ${i===a?'active':''}"></div>`).join('')}</div>`;
+}
+function render(scr){
+  S.screen=scr;
+  const fns={intro:introH,s1:step1H,s2:step2H,s3:step3H,s4:step4H,done:doneH};
+  $('#root').innerHTML=fns[scr](); bind(scr);
+}
+
+function introH(){return`<div class="screen">
+  <div style="height:.5rem"></div>
+  <div class="moon-wrap">🌙</div>
+  <div><p class="title">Kit <em>Nocturno</em></p><p class="subtitle" style="margin-top:4px">Ritual anti-pánico para la noche · 4 fases</p></div>
+  <div class="accent-card"><p>${INTRO_QUOTES[S.iQ]}</p></div>
+  <div class="step-list">
+    ${[['🛏','Prepara el espacio','3 min'],['🌬','Relaja el cuerpo','4 min'],['🎵','Ancla la mente','2 min'],['📓','Vacía la mente','2 min']].map(([e,n,t])=>`<div class="step-row"><div class="step-icon">${e}</div><span class="step-name">${n}</span><span class="step-time">${t}</span></div>`).join('')}
+  </div>
+  <button class="btn btn-primary" id="btn-start">Iniciar ritual nocturno</button>
+</div>`;}
+
+function step1H(){
+  const done=Object.values(S.prepareChecked).filter(Boolean).length;
+  return`<div class="screen">
+  ${dotsHTML(0)}
+  <div class="badge">Fase 1 · Prepara el espacio</div>
+  <p class="title" style="font-size:21px">El entorno le habla<br>a tu <em>sistema nervioso</em></p>
+  <div style="width:100%;display:flex;justify-content:space-between;align-items:center">
+    <p style="font-size:12px;color:var(--text3)">Marca cada paso al hacerlo</p>
+    <p style="font-size:12.5px;font-weight:600;color:var(--lav)" id="c-count">${done}/5</p>
+  </div>
+  <div class="progress-wrap"><div class="progress-fill" id="c-bar" style="width:${Math.round(done/5*100)}%"></div></div>
+  <div class="checklist" id="check-grid">
+    ${S.preparePool.map(c=>`<div class="check-item ${S.prepareChecked[c.id]?'checked':''}" data-id="${c.id}">
+      <div class="check-box">${S.prepareChecked[c.id]?'✓':''}</div>
+      <div><div class="check-lbl">${c.lbl}</div><div class="check-sub">${c.sub}</div></div>
+    </div>`).join('')}
+  </div>
+  <div id="s1-btn"><button class="btn ${done>=5?'btn-primary':'btn-ghost'}" id="btn-s1-go">${done>=5?'Continuar a fase 2':'Saltar esta fase'}</button></div>
+</div>`;}
+
+function step2H(){
+  const phaseLbl=S.cyclesDone>=3?BREATH_DONE_MSGS[S.bDone]:(S.breathPhase==='idle'?'Toca iniciar cuando estés listo':{inhale:'Inhala...',hold:'Sostén...',exhale:'Exhala...'}[S.breathPhase]||'');
+  let sz=70;
+  if(S.breathPhase==='inhale') sz=70+(80*(4-S.breathCount)/4);
+  if(S.breathPhase==='hold')   sz=150;
+  if(S.breathPhase==='exhale') sz=150-(80*((8-S.breathCount)/8));
+  const showInfo=S.breathPhase==='idle'&&S.cyclesDone===0;
+  return`<div class="screen">
+  ${dotsHTML(1)}
+  <div class="badge">Fase 2 · Relaja el cuerpo</div>
+  <p class="title" style="font-size:21px">Respiración <em>4-6-8</em></p>
+  <p class="body-text">Más suave que de día. Tu sistema nervioso<br>nocturno necesita ritmo lento.</p>
+  <div class="breath-wrap">
+    <div id="breath-info" class="info-card" style="${showInfo?'':'display:none'}">
+      <p>Esta variación 4-6-8 activa el nervio vago de forma más suave que la respiración diurna — ideal para preparar el cuerpo para el descanso sin sobre-activarlo.</p>
+    </div>
+    <div class="breath-stage">
+      <div class="breath-ring"></div>
+      <div class="breath-pulse" id="bpulse" style="width:${Math.round(sz)}px;height:${Math.round(sz)}px"></div>
+      <div class="breath-num" id="bnum">${S.breathPhase!=='idle'&&S.breathCount>0?S.breathCount:''}</div>
+    </div>
+    <p class="breath-phase-lbl" id="bphase">${phaseLbl}</p>
+    <div style="display:flex;gap:8px">${[0,1,2].map(i=>`<div class="cpip ${i<S.cyclesDone?'done':''}"></div>`).join('')}</div>
+    <p style="font-size:11px;color:var(--text3)" id="cycle-lbl">Ciclos: ${S.cyclesDone} de 3</p>
+  </div>
+  <div id="breath-btn-area">
+    ${S.cyclesDone>=3?`<button class="btn btn-primary" id="btn-s2-go">Continuar a fase 3</button>`:S.breathPhase==='idle'?`<button class="btn btn-primary" id="btn-breath-start">${S.cyclesDone===0?'Iniciar respiración':'Siguiente ciclo'}</button>`:''}
+  </div>
+</div>`;}
+
+/* ═══ STEP-3 ZONE HELPERS ═══ */
+function buildPlayerZone(sel,t,dashoff){
+  return`<div class="player-bar">
+    <div class="player-top">
+      <span class="player-name">${sel.icon} ${sel.name}</span>
+      <span class="player-status" id="player-status">${S.soundPlaying?'▶ Sonando':'⏸ Pausado'}</span>
+    </div>
+    <div class="volume-row">
+      <span class="volume-lbl">Volumen</span>
+      <input type="range" id="vol-slider" min="0" max="0.7" step="0.05" value="${_masterG?Math.min(_masterG.gain.value,0.7):0.35}">
+    </div>
+  </div>
+  <div class="timer-wrap">
+    <svg width="120" height="120" class="timer-svg">
+      <circle class="t-track" cx="60" cy="60" r="54"/>
+      <circle class="t-prog" id="t3-prog" cx="60" cy="60" r="54" stroke-dashoffset="${dashoff}"/>
+    </svg>
+    <div class="timer-num" id="t3-num">${t}</div>
+  </div>
+  <div id="t3-btn" style="width:100%;display:flex;flex-direction:column;gap:6px">
+    ${t===0?`<button class="btn btn-primary" id="btn-s3-go">Continuar a fase 4</button>`:S.timerRunning?`<button class="btn btn-ghost" id="btn-t3-pause">⏸ Pausar</button>`:`<button class="btn btn-primary" id="btn-t3-start">${t===60?'Iniciar 60 segundos':'Continuar'}</button>`}
+  </div>`;
+}
+function noSelHTML(){
+  return`<div class="info-card"><p>Elegir un sonido específico le da a tu mente algo concreto en qué enfocarse — interrumpe el pensamiento rumiativo nocturno de forma activa.</p></div>
+  <button class="btn btn-ghost" id="btn-s3-skip">Saltar esta fase</button>`;
+}
+function step3H(){
+  const hasSel=!!S.soundSelected;
+  const selSound=hasSel?S.soundPool.find(s=>s.id===S.soundSelected):null;
+  const t=Math.max(0,S.timerLeft);
+  const dashoff=Math.round(339*(1-((60-t)/60)));
+  return`<div class="screen">
+  ${dotsHTML(2)}
+  <div class="badge">Fase 3 · Ancla la mente</div>
+  <p class="title" style="font-size:21px">Cambia el canal<br>de tus <em>pensamientos</em></p>
+  <p class="body-text">Elige un sonido. Cierra los ojos y enfoca<br>toda tu atención en él durante 60 segundos.</p>
+  <div class="sound-grid" id="sound-grid">
+    ${S.soundPool.map(s=>`<div class="sound-opt ${S.soundSelected===s.id?'selected':''}" data-id="${s.id}" data-type="${s.type}"><span class="s-icon">${s.icon}</span>${s.name}</div>`).join('')}
+  </div>
+  <div id="s3-player-zone" style="width:100%;display:flex;flex-direction:column;gap:1rem">${hasSel?buildPlayerZone(selSound,t,dashoff):noSelHTML()}</div>
+</div>`;
+}
+
+function step4H(){return`<div class="screen">
+  ${dotsHTML(3)}
+  <div class="badge">Fase 4 · Vacía la mente</div>
+  <p class="title" style="font-size:21px">Saca lo que está<br><em>dando vueltas</em></p>
+  <div class="card">
+    <p style="font-size:14px;color:var(--lav-soft);font-style:italic;font-family:var(--serif);margin-bottom:6px">${JOURNAL_PROMPTS[S.jP]}</p>
+    <p style="font-size:11px;color:var(--text3)">Escribe lo primero que llegue. Sin filtro. Sin corrección.</p>
+  </div>
+  <textarea class="journal-input" id="journal-txt" placeholder="Escribe aquí..." rows="5">${S.journalText}</textarea>
+  <div class="info-card"><p>No tienes que resolver nada esta noche. Solo necesitas sacar el pensamiento de tu cabeza. Eso ya reduce la activación del sistema nervioso.</p></div>
+  <button class="btn btn-primary" id="btn-s4-go">Terminar el ritual 🌙</button>
+</div>`;}
+
+function doneH(){
+  const total=S.log.length;
+  return`<div class="screen">
+  <div style="height:.5rem"></div>
+  <div class="success-ring"><svg viewBox="0 0 32 32" fill="none"><path d="M8 16L13 21L24 11" stroke="#a08cff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  <p class="title">Ritual completado</p>
+  <p class="body-text">Tu cuerpo recibió la señal.<br>Puedes soltar la guardia ahora.</p>
+  <div class="accent-card"><p>${DONE_MSGS[S.dM]}</p></div>
+  ${total>0?`<div class="card"><p style="font-size:12.5px;font-weight:600;color:var(--text);margin-bottom:6px">🌙 Tu historial</p><p style="font-size:12px;color:var(--text3)">${total} noche${total!==1?'s':''} completada${total!==1?'s':''}. Cada una cuenta.</p></div>`:''}
+  <div class="card"><p style="font-size:12.5px;font-weight:600;color:var(--text);margin-bottom:8px">Si el sueño no llega</p>
+    ${['No forces. El esfuerzo de dormir es lo que mantiene despierto.','Repite mentalmente la respiración sin abrir los ojos.','Recuerda: descansar sin dormir también recupera.'].map(t=>`<div style="display:flex;gap:10px;padding:5px 0;border-bottom:1px solid rgba(160,140,255,.07)"><span style="color:var(--lav)">·</span><span style="font-size:12.5px;color:var(--text2);line-height:1.5">${t}</span></div>`).join('')}
+  </div>
+  <button class="btn btn-primary" id="btn-restart">Repetir el ritual</button>
+  <div style="height:.5rem"></div>
+</div>`;}
+
+/* ═══ BREATHING ENGINE (4-6-8) ═══ */
+function startBreath(){
+  clrBiv();
+  let phase='inhale', secs=4;
+  S.breathPhase=phase; S.breathCount=secs;
+  // Hide button and info immediately
+  const bba=$('#breath-btn-area'); if(bba) bba.innerHTML='';
+  const bi=$('#breath-info'); if(bi) bi.style.display='none';
+  updateBreathDOM();
+  S._biv=setInterval(()=>{
+    secs--;
+    if(secs>0){ S.breathCount=secs; updateBreathDOM(); return; }
+    if(phase==='inhale')     { phase='hold'; secs=6; }
+    else if(phase==='hold')  { phase='exhale'; secs=8; }
+    else {
+      S.cyclesDone++;
+      updateBreathDOM();
+      if(S.cyclesDone>=3){ clrBiv(); S.breathPhase='idle'; S.breathCount=0; showBreathDone(); return; }
+      phase='inhale'; secs=4;
+    }
+    S.breathPhase=phase; S.breathCount=secs;
+    updateBreathDOM();
+  },1000);
+}
+
+function updateBreathDOM(){
+  const bp=$('#bpulse'), bn=$('#bnum'), bph=$('#bphase'), cl=$('#cycle-lbl');
+  if(!bp) return;
+  const lbls={inhale:'Inhala...',hold:'Sostén...',exhale:'Exhala...'};
+  if(bn) bn.textContent=S.breathCount>0?S.breathCount:'';
+  if(bph) bph.textContent=lbls[S.breathPhase]||'';
+  let sz=70;
+  if(S.breathPhase==='inhale') sz=70+(80*(4-S.breathCount)/4);
+  if(S.breathPhase==='hold')   sz=150;
+  if(S.breathPhase==='exhale') sz=150-(80*((8-S.breathCount)/8));
+  bp.style.width=Math.round(sz)+'px'; bp.style.height=Math.round(sz)+'px';
+  document.querySelectorAll('.cpip').forEach((p,i)=>p.className='cpip'+(i<S.cyclesDone?' done':''));
+  if(cl) cl.textContent='Ciclos: '+S.cyclesDone+' de 3';
+}
+
+function showBreathDone(){
+  const bph=$('#bphase'); if(bph) bph.textContent=BREATH_DONE_MSGS[S.bDone];
+  const bn=$('#bnum'); if(bn) bn.textContent='';
+  document.querySelectorAll('.cpip').forEach(p=>p.className='cpip done');
+  const cl=$('#cycle-lbl'); if(cl) cl.textContent='Ciclos: 3 de 3';
+  const bba=$('#breath-btn-area');
+  if(bba){
+    bba.innerHTML=`<button class="btn btn-primary" id="btn-s2-go">Continuar a fase 3</button>`;
+    $('#btn-s2-go').addEventListener('click',()=>{ clrAll(); S.timerLeft=60; S.timerRunning=false; render('s3'); });
+  }
+}
+
+/* ═══ TIMER ENGINE (Phase 3) ═══ */
+function startTimer3(){
+  clrTiv(); S.timerRunning=true; updateTimerBtnArea();
+  S._tiv=setInterval(()=>{
+    S.timerLeft=Math.max(0,S.timerLeft-1);
+    // update only ring and number
+    const prog=$('#t3-prog'), num=$('#t3-num');
+    const t=S.timerLeft;
+    if(prog) prog.setAttribute('stroke-dashoffset',Math.round(339*(1-((60-t)/60))));
+    if(num)  num.textContent=t;
+    if(t===0){ S.timerRunning=false; clrTiv(); updateTimerBtnArea(); }
+  },1000);
+}
+function updateTimerBtnArea(){
+  const area=$('#t3-btn'); if(!area) return;
+  const t=S.timerLeft;
+  if(t===0){
+    if(!area.querySelector('#btn-s3-go')){
+      area.innerHTML=`<button class="btn btn-primary" id="btn-s3-go">Continuar a fase 4</button>`;
+      $('#btn-s3-go').addEventListener('click',()=>{ stopAudio(); render('s4'); });
+    }
+  } else if(S.timerRunning){
+    if(!area.querySelector('#btn-t3-pause')){
+      area.innerHTML=`<button class="btn btn-ghost" id="btn-t3-pause">⏸ Pausar</button>`;
+      $('#btn-t3-pause').addEventListener('click',()=>{ clrTiv(); S.timerRunning=false; updateTimerBtnArea(); });
+    }
+  } else {
+    if(!area.querySelector('#btn-t3-start')){
+      area.innerHTML=`<button class="btn btn-primary" id="btn-t3-start">${t===60?'Iniciar 60 segundos':'Continuar'}</button>`;
+      $('#btn-t3-start').addEventListener('click',startTimer3);
+    }
+  }
+}
+
+/* ═══ BIND ═══ */
+function bindS3TimerArea(){
+  const tarea=$('#t3-btn');
+  if(!tarea) return;
+  tarea.addEventListener('click',e=>{
+    const btn=e.target.closest('button'); if(!btn) return;
+    if(btn.id==='btn-t3-start') startTimer3();
+    if(btn.id==='btn-t3-pause'){ clrTiv(); S.timerRunning=false; updateTimerBtnArea(); }
+    if(btn.id==='btn-s3-go'){ stopAudio(); render('s4'); }
+  });
+}
+function bind(scr){
+  const on=(id,fn)=>{const el=$(id);if(el)el.addEventListener('click',fn);};
+  if(scr==='intro') on('#btn-start',()=>render('s1'));
+  if(scr==='s1'){
+    const grid=$('#check-grid');
+    if(grid) grid.addEventListener('click',e=>{
+      const item=e.target.closest('.check-item'); if(!item) return;
+      const id=item.dataset.id; S.prepareChecked[id]=!S.prepareChecked[id];
+      item.classList.toggle('checked',!!S.prepareChecked[id]);
+      item.querySelector('.check-box').textContent=S.prepareChecked[id]?'✓':'';
+      const done=Object.values(S.prepareChecked).filter(Boolean).length;
+      const cc=$('#c-count'),cb=$('#c-bar'),sb=$('#s1-btn');
+      if(cc) cc.textContent=done+'/5';
+      if(cb) cb.style.width=Math.round(done/5*100)+'%';
+      if(sb){
+        sb.innerHTML=`<button class="btn ${done>=5?'btn-primary':'btn-ghost'}" id="btn-s1-go">${done>=5?'Continuar a fase 2':'Saltar esta fase'}</button>`;
+        $('#btn-s1-go').addEventListener('click',()=>render('s2'));
+      }
+    });
+    on('#btn-s1-go',()=>render('s2'));
+  }
+  if(scr==='s2'){
+    on('#btn-breath-start',startBreath);
+    on('#btn-s2-go',()=>{ clrAll(); S.timerLeft=60; S.timerRunning=false; render('s3'); });
+  }
+  if(scr==='s3'){
+    const sg=$('#sound-grid');
+    if(sg) sg.addEventListener('click',e=>{
+      const opt=e.target.closest('.sound-opt'); if(!opt) return;
+      const id=opt.dataset.id, type=opt.dataset.type;
+      // Stop running timer, reset to 60 for new sound selection
+      clrTiv();
+      S.soundSelected=id; S.timerLeft=60; S.timerRunning=false;
+      // Update grid chips in-place — NO full re-render → sin parpadeo
+      sg.querySelectorAll('.sound-opt').forEach(o=>
+        o.classList.toggle('selected', o.dataset.id===id)
+      );
+      // Play audio (handles its own fade-in)
+      S.soundPlaying=false;
+      playAudio(type);
+      // Patch player zone in-place
+      const selSound=S.soundPool.find(s=>s.id===id);
+      const pzone=$('#s3-player-zone');
+      if(pzone){
+        pzone.innerHTML=buildPlayerZone(selSound,60,0);
+        const ps=$('#player-status'); if(ps) ps.textContent='▶ Sonando';
+        const vs=$('#vol-slider');
+        if(vs) vs.addEventListener('input',ev=>setVol(parseFloat(ev.target.value)));
+        bindS3TimerArea();
+      }
+    });
+    // Vol slider binding (when sound was already selected on initial render)
+    const vs=$('#vol-slider');
+    if(vs) vs.addEventListener('input',e=>setVol(parseFloat(e.target.value)));
+    // Timer area binding
+    bindS3TimerArea();
+    on('#btn-s3-skip',()=>{ stopAudio(); render('s4'); });
+  }
+  if(scr==='s4'){
+    const jt=$('#journal-txt'); if(jt) jt.addEventListener('input',e=>S.journalText=e.target.value);
+    on('#btn-s4-go',()=>{
+      const d=new Date();
+      S.log.unshift({date:d.toLocaleDateString('es-MX',{day:'numeric',month:'short'}),ts:Date.now()});
+      if(S.log.length>30) S.log.pop();
+      try{localStorage.setItem('kn_log',JSON.stringify(S.log));}catch(e){}
+      render('done');
+    });
+  }
+  if(scr==='done') on('#btn-restart',()=>{ clrAll(); stopAudio(); initSession(); render('intro'); });
+}
+
+initSession(); render('intro');
+</script>
+</body>
+</html>
