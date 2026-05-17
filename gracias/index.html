@@ -24,28 +24,22 @@
     html { scroll-behavior:smooth; }
 
     body {
-      font-family: 'DM Sans', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 48px 20px 64px;
-      position: relative;
-      overflow-x: hidden;
+      font-family:'DM Sans',sans-serif;
+      background:var(--bg); color:var(--text);
+      min-height:100vh;
+      display:flex; flex-direction:column; align-items:center;
+      padding:48px 20px 64px;
+      position:relative; overflow-x:hidden;
     }
 
     /* Ambient */
     body::before {
-      content: '';
-      position: fixed; inset: 0;
+      content:''; position:fixed; inset:0;
       background:
-        radial-gradient(ellipse 60% 40% at 15% 15%, rgba(29,158,117,.07) 0%, transparent 60%),
-        radial-gradient(ellipse 50% 40% at 85% 80%, rgba(74,144,212,.06) 0%, transparent 60%),
-        radial-gradient(ellipse 40% 30% at 50% 50%, rgba(160,140,255,.04) 0%, transparent 60%);
-      pointer-events: none;
-      z-index: 0;
+        radial-gradient(ellipse 60% 40% at 15% 15%,rgba(29,158,117,.07) 0%,transparent 60%),
+        radial-gradient(ellipse 50% 40% at 85% 80%,rgba(74,144,212,.06) 0%,transparent 60%),
+        radial-gradient(ellipse 40% 30% at 50% 50%,rgba(160,140,255,.04) 0%,transparent 60%);
+      pointer-events:none; z-index:0;
     }
 
     #stars { position:fixed; inset:0; z-index:0; pointer-events:none; }
@@ -72,23 +66,16 @@
     }
 
     /* Hero */
-    .hero {
-      text-align:center; margin-bottom:12px;
-      opacity:0; animation:fadeUp .7s ease forwards .25s;
-    }
+    .hero { text-align:center; margin-bottom:12px; opacity:0; animation:fadeUp .7s ease forwards .25s; }
     .hero-eyebrow {
       font-size:11px; font-weight:500; letter-spacing:2.5px;
       text-transform:uppercase; color:var(--teal); margin-bottom:18px;
     }
     .hero h1 {
       font-family:'Cormorant Garamond',serif;
-      font-size:clamp(38px,7vw,62px);
-      font-weight:500; line-height:1.08; color:#fff; margin-bottom:18px;
+      font-size:clamp(38px,7vw,62px); font-weight:500; line-height:1.08; color:#fff; margin-bottom:18px;
     }
-    .hero p {
-      font-size:15px; font-weight:300; color:var(--muted);
-      max-width:420px; margin:0 auto; line-height:1.75;
-    }
+    .hero p { font-size:15px; font-weight:300; color:var(--muted); max-width:420px; margin:0 auto; line-height:1.75; }
 
     /* Divider */
     .line {
@@ -99,12 +86,12 @@
     }
 
     /* Grid */
-    .grid {
-      display:grid; grid-template-columns:repeat(2,1fr);
-      gap:18px; width:100%;
-    }
+    .grid { display:grid; grid-template-columns:repeat(2,1fr); gap:18px; width:100%; }
 
-    /* Card base */
+    /* ═══════════════════════════════════════════
+       CARDS — estado inicial controlado por JS
+       (opacity:0 se aplica vía JS antes del reveal)
+    ═══════════════════════════════════════════ */
     .card {
       background:var(--bg2);
       border:1px solid var(--border);
@@ -112,34 +99,38 @@
       padding:30px 26px 26px;
       display:flex; flex-direction:column; gap:18px;
       position:relative; overflow:hidden;
-      opacity:0;
-      transition:transform .28s ease, border-color .28s ease,
-                 box-shadow .28s ease, opacity .3s ease;
+      /* Sin opacity:0 aquí — JS lo controla para evitar el bug de KN visible antes que los demás */
+      transition:opacity .55s ease, transform .55s ease,
+                 border-color .28s ease, box-shadow .28s ease;
+      will-change:opacity, transform;
     }
+
+    /* top accent */
     .card::before {
-      content:''; position:absolute;
-      top:0; left:0; right:0; height:2px;
-      background:var(--cc);
-      border-radius:18px 18px 0 0;
+      content:''; position:absolute; top:0; left:0; right:0; height:2px;
+      background:var(--cc); border-radius:18px 18px 0 0;
       transition:background .3s ease;
     }
+    /* inner glow */
     .card::after {
       content:''; position:absolute; inset:0; border-radius:18px;
       background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(var(--cc-rgb),.08) 0%,transparent 70%);
       opacity:0; transition:opacity .28s ease; pointer-events:none;
     }
-    .card:not(.locked):hover {
+
+    /* Hover — solo en desbloqueadas y reveladas */
+    .card.revealed:not(.locked):hover {
       transform:translateY(-5px);
       border-color:rgba(var(--cc-rgb),.28);
       box-shadow:0 24px 64px rgba(var(--cc-rgb),.12);
     }
-    .card:not(.locked):hover::after { opacity:1; }
+    .card.revealed:not(.locked):hover::after { opacity:1; }
 
-    /* Color variants + stagger */
-    .c-calma    { --cc:var(--teal); --cc-rgb:var(--teal-rgb); animation:fadeUp .65s ease forwards .55s; }
-    .c-nocturno { --cc:var(--lav);  --cc-rgb:var(--lav-rgb);  animation:fadeUp .65s ease forwards .7s;  }
-    .c-base     { --cc:var(--ora);  --cc-rgb:var(--ora-rgb);  animation:fadeUp .65s ease forwards .85s; }
-    .c-mapa     { --cc:var(--blue); --cc-rgb:var(--blue-rgb); animation:fadeUp .65s ease forwards 1s;   }
+    /* Color variants */
+    .c-calma    { --cc:var(--teal); --cc-rgb:var(--teal-rgb); }
+    .c-nocturno { --cc:var(--lav);  --cc-rgb:var(--lav-rgb);  }
+    .c-base     { --cc:var(--ora);  --cc-rgb:var(--ora-rgb);  }
+    .c-mapa     { --cc:var(--blue); --cc-rgb:var(--blue-rgb); }
 
     /* Card inner */
     .card-head { display:flex; align-items:center; gap:14px; }
@@ -154,22 +145,16 @@
       font-size:9px; font-weight:600; letter-spacing:2.5px;
       text-transform:uppercase; color:var(--cc); transition:color .3s;
     }
-    .card-name {
-      font-family:'Cormorant Garamond',serif;
-      font-size:24px; font-weight:600; color:#fff; line-height:1;
-    }
+    .card-name { font-family:'Cormorant Garamond',serif; font-size:24px; font-weight:600; color:#fff; line-height:1; }
     .card-promise {
       font-size:13px; font-weight:400; font-style:italic;
       color:rgba(var(--cc-rgb),.9);
       border-left:2px solid var(--cc); padding-left:12px; line-height:1.55;
       transition:color .3s, border-color .3s;
     }
-    .card-desc {
-      font-size:13.5px; font-weight:300; color:var(--muted);
-      line-height:1.7; flex:1;
-    }
+    .card-desc { font-size:13.5px; font-weight:300; color:var(--muted); line-height:1.7; flex:1; }
 
-    /* Button — unlocked */
+    /* Button — desbloqueado */
     .card-btn {
       display:inline-flex; align-items:center; justify-content:center;
       gap:8px; padding:11px 20px;
@@ -179,52 +164,269 @@
       text-decoration:none; letter-spacing:.3px; cursor:pointer;
       transition:background .2s, border-color .2s, gap .2s, color .2s;
     }
-    .card:not(.locked) .card-btn:hover {
-      background:rgba(var(--cc-rgb),.18);
-      border-color:rgba(var(--cc-rgb),.5);
-      gap:12px;
+    .card.revealed:not(.locked) .card-btn:hover {
+      background:rgba(var(--cc-rgb),.18); border-color:rgba(var(--cc-rgb),.5); gap:12px;
     }
     .card-btn svg { flex-shrink:0; transition:transform .2s; }
-    .card:not(.locked) .card-btn:hover svg { transform:translateX(3px); }
+    .card.revealed:not(.locked) .card-btn:hover svg { transform:translateX(3px); }
 
     /* ═══════════════════════════════════════════
        LOCKED STATE
     ═══════════════════════════════════════════ */
-    .card.locked { opacity:0.52; }
     .card.locked::before { background:rgba(255,255,255,0.1); }
     .card.locked .card-icon { background:rgba(255,255,255,.05); border-color:rgba(255,255,255,.08); }
-    .card.locked .card-label  { color:var(--muted); }
+    .card.locked .card-label { color:var(--muted); }
     .card.locked .card-promise { color:rgba(255,255,255,.28); border-left-color:rgba(255,255,255,.14); }
-    .card.locked:hover { opacity:0.78; transform:translateY(-3px); border-color:rgba(255,255,255,.12); box-shadow:0 16px 40px rgba(0,0,0,.3); }
+
+    .card.revealed.locked:hover {
+      border-color:rgba(255,255,255,.12);
+      box-shadow:0 16px 40px rgba(0,0,0,.3);
+    }
 
     .lock-badge {
       position:absolute; top:14px; right:14px;
       width:30px; height:30px;
       background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1);
-      border-radius:8px;
-      display:flex; align-items:center; justify-content:center;
+      border-radius:8px; display:flex; align-items:center; justify-content:center;
       font-size:13px; line-height:1;
     }
     .not-included {
       font-size:9px; font-weight:600; letter-spacing:2px;
       text-transform:uppercase; color:rgba(255,255,255,.28); text-align:center;
     }
-    .card.locked .card-btn {
+
+    /* Botón estándar bloqueado */
+    .card.locked .card-btn.btn-locked {
       background:rgba(255,255,255,.05); border-color:rgba(255,255,255,.1); color:rgba(255,255,255,.38);
     }
-    .card.locked .card-btn:hover {
+    .card.locked .card-btn.btn-locked:hover {
       background:rgba(255,255,255,.09); border-color:rgba(255,255,255,.2); color:rgba(255,255,255,.65); gap:12px;
     }
-    .card.locked .card-btn:hover svg { transform:translateX(3px); }
+    .card.locked .card-btn.btn-locked:hover svg { transform:translateX(3px); }
 
-    /* Kit Nocturno — nota email */
-    .email-note {
-      display:flex; align-items:flex-start; gap:8px;
-      background:rgba(160,140,255,.05); border:1px solid rgba(160,140,255,.12);
-      border-radius:8px; padding:10px 12px;
-      font-size:11.5px; font-weight:300; color:rgba(255,255,255,.35); line-height:1.55;
+    /* ═══════════════════════════════════════════
+       KIT NOCTURNO — botones especiales
+    ═══════════════════════════════════════════ */
+
+    /* "Abrir herramienta" en KN bloqueado — tono lavanda suave */
+    .kn-open-btn {
+      background:rgba(160,140,255,.08);
+      border-color:rgba(160,140,255,.22);
+      color:rgba(160,140,255,.7);
     }
-    .email-note span { font-size:13px; flex-shrink:0; margin-top:1px; }
+    .kn-open-btn:hover {
+      background:rgba(160,140,255,.15) !important;
+      border-color:rgba(160,140,255,.38) !important;
+      color:rgba(160,140,255,.95) !important;
+      gap:12px !important;
+    }
+    .kn-open-btn:hover svg { transform:translateX(3px) !important; }
+
+    /* "Agregar a mis herramientas disponibles" — sobrio, secundario */
+    .kn-checkout-btn {
+      background:transparent;
+      border-color:rgba(255,255,255,.08);
+      color:rgba(255,255,255,.3);
+      font-size:12px;
+      padding:9px 16px;
+    }
+    .kn-checkout-btn:hover {
+      background:rgba(255,255,255,.05) !important;
+      border-color:rgba(255,255,255,.15) !important;
+      color:rgba(255,255,255,.55) !important;
+      gap:12px !important;
+    }
+    .kn-checkout-btn:hover svg { transform:translateX(3px) !important; }
+
+    /* ═══════════════════════════════════════════
+       PASSWORD MODAL
+    ═══════════════════════════════════════════ */
+    .pw-overlay {
+      position:fixed; inset:0; z-index:200;
+      background:rgba(4,6,14,.88);
+      backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
+      opacity:0; pointer-events:none;
+      transition:opacity .25s ease;
+    }
+    .pw-overlay.active { opacity:1; pointer-events:all; }
+
+    .pw-modal {
+      position:fixed; inset:0; z-index:201;
+      display:flex; align-items:center; justify-content:center;
+      padding:20px;
+      pointer-events:none;
+      opacity:0; transform:translateY(16px);
+      transition:opacity .25s ease, transform .25s ease;
+    }
+    .pw-modal.active { opacity:1; transform:translateY(0); pointer-events:all; }
+
+    .pw-box {
+      background:#0d1120;
+      border:1px solid rgba(160,140,255,.2);
+      border-radius:20px;
+      padding:32px 28px 28px;
+      width:100%; max-width:400px;
+      display:flex; flex-direction:column; gap:20px;
+      box-shadow:0 32px 80px rgba(0,0,0,.5), 0 0 0 1px rgba(160,140,255,.08);
+      position:relative; overflow:hidden;
+    }
+    /* top accent lavanda */
+    .pw-box::before {
+      content:''; position:absolute; top:0; left:0; right:0; height:2px;
+      background:var(--lav); border-radius:20px 20px 0 0;
+    }
+
+    .pw-header { display:flex; align-items:center; gap:14px; }
+    .pw-header-icon {
+      width:46px; height:46px; border-radius:12px; flex-shrink:0;
+      background:rgba(160,140,255,.1); border:1px solid rgba(160,140,255,.22);
+      display:flex; align-items:center; justify-content:center; font-size:21px;
+    }
+    .pw-header-meta { display:flex; flex-direction:column; gap:3px; }
+    .pw-header-label {
+      font-size:9px; font-weight:600; letter-spacing:2.5px;
+      text-transform:uppercase; color:var(--lav);
+    }
+    .pw-header-name {
+      font-family:'Cormorant Garamond',serif;
+      font-size:22px; font-weight:600; color:#fff; line-height:1.1;
+    }
+
+    .pw-desc {
+      font-size:13.5px; font-weight:300; color:var(--muted); line-height:1.7;
+    }
+    .pw-desc strong { color:rgba(160,140,255,.8); font-weight:500; }
+
+    /* Input wrapper */
+    .pw-input-wrap { position:relative; }
+    .pw-input {
+      width:100%; padding:12px 44px 12px 16px;
+      background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1);
+      border-radius:10px; color:var(--text);
+      font-family:'DM Sans',sans-serif; font-size:14px; font-weight:400;
+      outline:none; letter-spacing:1px;
+      transition:border-color .2s, box-shadow .2s;
+    }
+    .pw-input::placeholder { color:var(--muted); letter-spacing:0; }
+    .pw-input:focus {
+      border-color:rgba(160,140,255,.4);
+      box-shadow:0 0 0 3px rgba(160,140,255,.08);
+    }
+
+    /* Toggle visibilidad */
+    .pw-toggle {
+      position:absolute; right:12px; top:50%; transform:translateY(-50%);
+      background:none; border:none; cursor:pointer;
+      color:var(--muted); padding:4px;
+      display:flex; align-items:center; justify-content:center;
+      transition:color .2s;
+    }
+    .pw-toggle:hover { color:var(--text); }
+
+    /* Error */
+    .pw-error {
+      font-size:12.5px; color:#ff6b6b;
+      background:rgba(255,107,107,.07); border:1px solid rgba(255,107,107,.15);
+      border-radius:8px; padding:10px 14px; line-height:1.5;
+      display:none;
+    }
+    .pw-error.visible { display:block; }
+
+    /* Shake on wrong password */
+    @keyframes shake {
+      0%,100%{transform:translateX(0)}
+      20%{transform:translateX(-8px)}
+      40%{transform:translateX(8px)}
+      60%{transform:translateX(-5px)}
+      80%{transform:translateX(5px)}
+    }
+    .pw-box.shake { animation:shake .35s ease; }
+
+    /* Actions */
+    .pw-actions { display:flex; gap:10px; }
+    .pw-btn {
+      flex:1; padding:11px 16px; border-radius:10px;
+      font-family:'DM Sans',sans-serif; font-size:13.5px; font-weight:500;
+      cursor:pointer; border:none; transition:all .2s;
+      display:flex; align-items:center; justify-content:center; gap:7px;
+    }
+    .pw-btn-cancel {
+      background:rgba(255,255,255,.05); color:var(--muted);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .pw-btn-cancel:hover { background:rgba(255,255,255,.09); color:var(--text); }
+    .pw-btn-submit {
+      background:rgba(160,140,255,.15); color:var(--lav);
+      border:1px solid rgba(160,140,255,.28);
+    }
+    .pw-btn-submit:hover { background:rgba(160,140,255,.25); border-color:rgba(160,140,255,.45); }
+
+    /* ═══════════════════════════════════════════
+       TOOL MODAL (iframe)
+    ═══════════════════════════════════════════ */
+    #modal-overlay {
+      position:fixed; inset:0; z-index:100;
+      background:rgba(4,6,14,.92);
+      backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px);
+      opacity:0; pointer-events:none;
+      transition:opacity .3s ease;
+    }
+    #modal-overlay.active { opacity:1; pointer-events:all; }
+
+    #tool-modal {
+      position:fixed; inset:0; z-index:101;
+      display:flex; flex-direction:column;
+      transform:translateY(100%);
+      transition:transform .36s cubic-bezier(.4,0,.2,1);
+    }
+    #tool-modal.active { transform:translateY(0); }
+
+    .modal-bar {
+      height:var(--modal-bar);
+      background:#0a0d18; border-bottom:1px solid rgba(255,255,255,.08);
+      display:flex; align-items:center; padding:0 16px 0 20px;
+      gap:12px; flex-shrink:0;
+    }
+    .modal-bar-icon { font-size:18px; line-height:1; flex-shrink:0; }
+    .modal-bar-info { display:flex; flex-direction:column; gap:1px; flex:1; min-width:0; }
+    .modal-bar-label {
+      font-size:9px; font-weight:600; letter-spacing:2px;
+      text-transform:uppercase; color:var(--modal-color,var(--teal)); line-height:1;
+    }
+    .modal-bar-name {
+      font-family:'Cormorant Garamond',serif;
+      font-size:17px; font-weight:600; color:#fff; line-height:1.1;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+    .modal-close {
+      width:36px; height:36px; border-radius:10px; flex-shrink:0;
+      background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1);
+      color:rgba(255,255,255,.6); cursor:pointer;
+      display:flex; align-items:center; justify-content:center;
+      font-size:18px; line-height:1;
+      transition:background .2s, color .2s, border-color .2s;
+    }
+    .modal-close:hover { background:rgba(255,255,255,.12); color:#fff; border-color:rgba(255,255,255,.2); }
+    .modal-accent { height:2px; background:var(--modal-color,var(--teal)); flex-shrink:0; transition:background .3s; }
+
+    .modal-loading {
+      position:absolute;
+      top:calc(var(--modal-bar) + 2px); left:0; right:0; bottom:0;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      gap:16px; background:var(--bg); z-index:1; pointer-events:none;
+      transition:opacity .3s ease;
+    }
+    .modal-loading.hidden { opacity:0; }
+    .spinner {
+      width:36px; height:36px; border-radius:50%;
+      border:2px solid rgba(255,255,255,.08);
+      border-top-color:var(--modal-color,var(--teal));
+      animation:spin .8s linear infinite;
+    }
+    @keyframes spin { to{transform:rotate(360deg)} }
+    .modal-loading p { font-size:12px; color:var(--muted); font-weight:300; letter-spacing:.5px; }
+
+    #tool-frame { flex:1; width:100%; border:none; background:var(--bg); }
 
     /* Footer */
     .footer {
@@ -240,106 +442,7 @@
     }
     .footer-copy { font-size:11.5px; color:rgba(120,120,160,.45); letter-spacing:.5px; }
 
-    /* ═══════════════════════════════════════════
-       MODAL CON IFRAME
-    ═══════════════════════════════════════════ */
-
-    /* Overlay oscuro */
-    #modal-overlay {
-      position:fixed; inset:0; z-index:100;
-      background:rgba(4,6,14,.92);
-      opacity:0; pointer-events:none;
-      transition:opacity .3s ease;
-      backdrop-filter:blur(4px);
-      -webkit-backdrop-filter:blur(4px);
-    }
-    #modal-overlay.active { opacity:1; pointer-events:all; }
-
-    /* Contenedor del modal */
-    #tool-modal {
-      position:fixed; inset:0; z-index:101;
-      display:flex; flex-direction:column;
-      transform:translateY(100%);
-      transition:transform .36s cubic-bezier(.4,0,.2,1);
-    }
-    #tool-modal.active { transform:translateY(0); }
-
-    /* Barra superior del modal */
-    .modal-bar {
-      height:var(--modal-bar);
-      background:#0a0d18;
-      border-bottom:1px solid rgba(255,255,255,.08);
-      display:flex; align-items:center;
-      padding:0 16px 0 20px;
-      gap:12px;
-      flex-shrink:0;
-    }
-
-    .modal-bar-icon { font-size:18px; line-height:1; flex-shrink:0; }
-
-    .modal-bar-info { display:flex; flex-direction:column; gap:1px; flex:1; min-width:0; }
-
-    .modal-bar-label {
-      font-size:9px; font-weight:600; letter-spacing:2px;
-      text-transform:uppercase; color:var(--modal-color, var(--teal));
-      line-height:1;
-    }
-
-    .modal-bar-name {
-      font-family:'Cormorant Garamond',serif;
-      font-size:17px; font-weight:600; color:#fff;
-      line-height:1.1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-    }
-
-    /* Botón cerrar */
-    .modal-close {
-      width:36px; height:36px; border-radius:10px;
-      background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1);
-      color:rgba(255,255,255,.6); cursor:pointer;
-      display:flex; align-items:center; justify-content:center;
-      font-size:18px; line-height:1;
-      transition:background .2s, color .2s, border-color .2s;
-      flex-shrink:0;
-    }
-    .modal-close:hover { background:rgba(255,255,255,.12); color:#fff; border-color:rgba(255,255,255,.2); }
-
-    /* Separador de color */
-    .modal-accent {
-      height:2px; background:var(--modal-color, var(--teal));
-      flex-shrink:0;
-      transition:background .3s;
-    }
-
-    /* Loading indicator */
-    .modal-loading {
-      position:absolute;
-      top:calc(var(--modal-bar) + 2px); left:0; right:0; bottom:0;
-      display:flex; flex-direction:column; align-items:center; justify-content:center;
-      gap:16px; background:var(--bg); z-index:1; pointer-events:none;
-      transition:opacity .3s ease;
-    }
-    .modal-loading.hidden { opacity:0; }
-
-    .spinner {
-      width:36px; height:36px; border-radius:50%;
-      border:2px solid rgba(255,255,255,.08);
-      border-top-color:var(--modal-color, var(--teal));
-      animation:spin .8s linear infinite;
-    }
-    @keyframes spin { to { transform:rotate(360deg); } }
-
-    .modal-loading p {
-      font-size:12px; color:var(--muted); font-weight:300; letter-spacing:.5px;
-    }
-
-    /* iframe */
-    #tool-frame {
-      flex:1; width:100%; border:none;
-      background:var(--bg);
-      position:relative; z-index:0;
-    }
-
-    /* Animations */
+    /* Animations hero/line */
     @keyframes fadeUp  { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
     @keyframes fadeIn  { from{opacity:0} to{opacity:1} }
 
@@ -355,19 +458,63 @@
       .footer { margin-top:40px; }
       .modal-bar { padding:0 12px 0 16px; }
       .modal-bar-name { font-size:15px; }
+      .pw-box { padding:28px 20px 24px; }
+      .pw-actions { flex-direction:column; }
     }
   </style>
 </head>
 <body>
 
-<!-- ── Stars ─────────────────────────────────── -->
+<!-- Stars -->
 <div id="stars"></div>
 
-<!-- ════════════════════════════════════════════
-     MODAL CON IFRAME
-════════════════════════════════════════════ -->
-<div id="modal-overlay"></div>
+<!-- ═══════════════════════════════════════════
+     PASSWORD MODAL — Kit Nocturno
+═══════════════════════════════════════════ -->
+<div id="pw-overlay" class="pw-overlay"></div>
+<div id="pw-modal" class="pw-modal" role="dialog" aria-modal="true" aria-labelledby="pw-title">
+  <div class="pw-box" id="pw-box">
 
+    <div class="pw-header">
+      <div class="pw-header-icon">🌙</div>
+      <div class="pw-header-meta">
+        <span class="pw-header-label">Kit Nocturno · Acceso exclusivo</span>
+        <span class="pw-header-name" id="pw-title">Ingresa tu código</span>
+      </div>
+    </div>
+
+    <p class="pw-desc">
+      Encuentra el password en el <strong>email de confirmación</strong> que Hotmart te envió al adquirir este complemento.
+    </p>
+
+    <div class="pw-input-wrap">
+      <input type="password" id="pw-input" class="pw-input"
+             placeholder="Código de acceso" autocomplete="off" spellcheck="false">
+      <button class="pw-toggle" id="pw-toggle" type="button" aria-label="Mostrar u ocultar código">
+        <svg id="eye-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+          <circle cx="12" cy="12" r="3"/>
+        </svg>
+      </button>
+    </div>
+
+    <p class="pw-error" id="pw-error">Código incorrecto. Revisa el email de confirmación de Hotmart.</p>
+
+    <div class="pw-actions">
+      <button class="pw-btn pw-btn-cancel" id="pw-cancel" type="button">Cancelar</button>
+      <button class="pw-btn pw-btn-submit" id="pw-submit" type="button">
+        Acceder
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M1 7H13M7 1L13 7L7 13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TOOL MODAL — iframe
+═══════════════════════════════════════════ -->
+<div id="modal-overlay"></div>
 <div id="tool-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
   <div class="modal-bar">
     <span class="modal-bar-icon" id="modal-icon" aria-hidden="true"></span>
@@ -378,19 +525,16 @@
     <button class="modal-close" id="modal-close" aria-label="Cerrar herramienta">✕</button>
   </div>
   <div class="modal-accent" id="modal-accent"></div>
-
-  <!-- Spinner mientras carga el iframe -->
   <div class="modal-loading" id="modal-loading">
     <div class="spinner"></div>
     <p>Cargando herramienta…</p>
   </div>
-
   <iframe id="tool-frame" title="Herramienta Resuelve360" src="" allowfullscreen></iframe>
 </div>
 
-<!-- ════════════════════════════════════════════
+<!-- ═══════════════════════════════════════════
      PÁGINA PRINCIPAL
-════════════════════════════════════════════ -->
+═══════════════════════════════════════════ -->
 <div class="wrapper">
 
   <div class="brand">Resuelve360</div>
@@ -405,13 +549,11 @@
 
   <div class="grid">
 
-    <!-- MODO CALMA · mc ──────────────────────── -->
+    <!-- MODO CALMA · mc -->
     <div class="card c-calma" data-product="mc"
          data-tool-url="https://apps.resuelve360.com/modo-calma"
-         data-tool-icon="🌿"
-         data-tool-label="Sistema guiado · 5 pasos"
-         data-tool-name="Modo Calma"
-         data-tool-color="#1D9E75">
+         data-tool-icon="🌿" data-tool-label="Sistema guiado · 5 pasos"
+         data-tool-name="Modo Calma" data-tool-color="#1D9E75">
       <div class="card-head">
         <div class="card-icon">🌿</div>
         <div class="card-meta">
@@ -429,13 +571,11 @@
       </button>
     </div>
 
-    <!-- KIT NOCTURNO · kn ────────────────────── -->
-    <div class="card c-nocturno" data-product="kn"
+    <!-- KIT NOCTURNO · kn — siempre bloqueado, requiere password -->
+    <div class="card c-nocturno" id="card-kn" data-product="kn"
          data-tool-url="https://apps.resuelve360.com/kit-nocturno"
-         data-tool-icon="🌙"
-         data-tool-label="Ritual guiado · 4 fases"
-         data-tool-name="Kit Nocturno"
-         data-tool-color="#a08cff">
+         data-tool-icon="🌙" data-tool-label="Ritual guiado · 4 fases"
+         data-tool-name="Kit Nocturno" data-tool-color="#a08cff">
       <div class="card-head">
         <div class="card-icon">🌙</div>
         <div class="card-meta">
@@ -445,25 +585,24 @@
       </div>
       <p class="card-promise">"Prepara tu sistema nervioso antes de dormir."</p>
       <p class="card-desc">Un ritual de 4 fases para cerrar el día sin ansiedad acumulada y entrar en un sueño más profundo y reparador.</p>
-      <button class="card-btn open-tool"
-              data-locked-href="https://pay.hotmart.com/X105865217T"
-              data-locked-text="Agregar a mi acceso">
+      <!-- Botón 1: Abrir herramienta (password popup) — se muestra siempre -->
+      <button class="card-btn kn-open-btn open-tool" id="kn-open-btn">
         Abrir herramienta
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 7H13M7 1L13 7L7 13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
-      <div class="email-note">
-        <span>📩</span>
-        ¿Ya lo agregaste en el checkout? Encuéntralo en el email de confirmación que Hotmart te envió.
-      </div>
+      <!-- Botón 2: Agregar (checkout) — se oculta si ya está desbloqueado -->
+      <a href="https://pay.hotmart.com/X105865217T" id="kn-checkout-btn"
+         class="card-btn kn-checkout-btn" target="_blank" rel="noopener">
+        Agregar a mis herramientas disponibles
+        <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M1 7H13M7 1L13 7L7 13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
     </div>
 
-    <!-- BASE CERO · bc ───────────────────────── -->
+    <!-- BASE CERO · bc -->
     <div class="card c-base" data-product="bc"
          data-tool-url="https://apps.resuelve360.com/base-cero"
-         data-tool-icon="🌅"
-         data-tool-label="Rutina matutina · 7 min"
-         data-tool-name="Base Cero"
-         data-tool-color="#d4550a">
+         data-tool-icon="🌅" data-tool-label="Rutina matutina · 7 min"
+         data-tool-name="Base Cero" data-tool-color="#d4550a">
       <div class="card-head">
         <div class="card-icon">🌅</div>
         <div class="card-meta">
@@ -475,19 +614,17 @@
       <p class="card-desc">7 minutos cada mañana para empezar desde calma, no desde reacción. El cuerpo se entrena con constancia, no con esfuerzo.</p>
       <button class="card-btn open-tool"
               data-locked-href="https://pay.hotmart.com/G105865709J"
-              data-locked-text="Agregar a mi acceso">
+              data-locked-text="Agregar a mis herramientas disponibles">
         Abrir herramienta
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 7H13M7 1L13 7L7 13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
     </div>
 
-    <!-- MAPA DEL PÁNICO · mp ─────────────────── -->
+    <!-- MAPA DEL PÁNICO · mp -->
     <div class="card c-mapa" data-product="mp"
          data-tool-url="https://apps.resuelve360.com/mapa-panico"
-         data-tool-icon="🗺️"
-         data-tool-label="Mini herramienta · historial"
-         data-tool-name="Mapa del Pánico"
-         data-tool-color="#4a90d4">
+         data-tool-icon="🗺️" data-tool-label="Mini herramienta · historial"
+         data-tool-name="Mapa del Pánico" data-tool-color="#4a90d4">
       <div class="card-head">
         <div class="card-icon">🗺️</div>
         <div class="card-meta">
@@ -499,7 +636,7 @@
       <p class="card-desc">Mapea disparadores, señales físicas y contexto de cada episodio. Cuanto más lo usas, más claridad tienes sobre lo que te activa.</p>
       <button class="card-btn open-tool"
               data-locked-href="https://pay.hotmart.com/C105865762J"
-              data-locked-text="Agregar a mi acceso">
+              data-locked-text="Agregar a mis herramientas disponibles">
         Abrir herramienta
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 7H13M7 1L13 7L7 13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
@@ -520,6 +657,14 @@
 <script>
 (function () {
 
+  /* ══════════════════════════════════════════════
+     CONTRASEÑA DE KIT NOCTURNO
+     Cambia el valor de KN_PASSWORD por el que
+     quieras entregar en el email de Hotmart.
+     Es case-insensitive (NOCTURNO = nocturno = Nocturno).
+  ══════════════════════════════════════════════ */
+  var KN_PASSWORD = 'NOCTURNO';
+
   /* ── Stars ──────────────────────────────────── */
   var starsEl = document.getElementById('stars');
   for (var i = 0; i < 55; i++) {
@@ -534,34 +679,55 @@
     starsEl.appendChild(s);
   }
 
-  /* ── Parámetro ?p= ───────────────────────────
-   *  Códigos: mc · bc · mp   (kn siempre bloqueado)
+  /* ── Parámetro ?p= ──────────────────────────
+   *  Configura en Hotmart (Embudo → Página de Gracias):
+   *    Rechazó ambos upsells  → apps.resuelve360.com/gracias?p=mc
+   *    Aceptó Base Cero       → apps.resuelve360.com/gracias?p=mc,bc
+   *    Aceptó ambos upsells   → apps.resuelve360.com/gracias?p=mc,bc,mp
+   *    Sin parámetro          → mc, bc, mp desbloqueados (favoritos/email)
    *
-   *  URLs para Hotmart (Embudo → Página de Gracias):
-   *    Rechazó ambos upsells      → ?p=mc
-   *    Aceptó Base Cero           → ?p=mc,bc
-   *    Aceptó ambos upsells       → ?p=mc,bc,mp
-   *    Sin parámetro (favoritos)  → mc, bc, mp desbloqueados
+   *  Kit Nocturno (kn) NUNCA en los parámetros.
+   *  Se desbloquea solo con contraseña correcta.
    * ─────────────────────────────────────────── */
-  var params  = new URLSearchParams(window.location.search);
-  var pParam  = params.get('p');
+  var params   = new URLSearchParams(window.location.search);
+  var pParam   = params.get('p');
   var unlocked = new Set(pParam
     ? pParam.split(',').map(function (v) { return v.trim().toLowerCase(); })
     : ['mc', 'bc', 'mp']
   );
-  /* kn NUNCA se desbloquea automáticamente */
-  unlocked.delete('kn');
+  unlocked.delete('kn'); /* kn nunca en el set automático */
 
-  var SVG_ARROW =
-    '<svg width="14" height="14" viewBox="0 0 14 14" fill="none">' +
-    '<path d="M1 7H13M7 1L13 7L7 13" stroke="currentColor" ' +
-    'stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  /* ── ¿KN desbloqueado en visitas anteriores? */
+  var knPreviouslyUnlocked = localStorage.getItem('r360_kn_unlocked') === 'true';
 
-  /* ── Aplicar estado bloqueado ─────────────── */
-  document.querySelectorAll('.card[data-product]').forEach(function (card) {
+  /* ── SVG arrow reutilizable */
+  var SVG = function (size) {
+    size = size || 14;
+    return '<svg width="' + size + '" height="' + size + '" viewBox="0 0 14 14" fill="none">' +
+      '<path d="M1 7H13M7 1L13 7L7 13" stroke="currentColor" stroke-width="1.6" ' +
+      'stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  };
+
+  /* ══════════════════════════════════════════════
+     STEP 1 — Ocultar todas las cards ANTES
+     de procesarlas (fix del bug de animación)
+  ══════════════════════════════════════════════ */
+  var allCards = document.querySelectorAll('.card');
+  allCards.forEach(function (card) {
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(22px)';
+  });
+
+  /* ══════════════════════════════════════════════
+     STEP 2 — Procesar estados (locked/unlocked)
+  ══════════════════════════════════════════════ */
+
+  /* Cards estándar (mc, bc, mp) */
+  document.querySelectorAll('.card[data-product]:not(#card-kn)').forEach(function (card) {
     var code = card.getAttribute('data-product');
-    if (unlocked.has(code)) return;
+    if (unlocked.has(code)) return; /* desbloqueado */
 
+    /* Bloquear */
     card.classList.add('locked');
 
     var badge = document.createElement('div');
@@ -570,95 +736,230 @@
     badge.textContent = '🔒';
     card.appendChild(badge);
 
-    if (code !== 'kn') {
-      var tag = document.createElement('p');
-      tag.className = 'not-included';
-      tag.textContent = 'No incluido en tu compra';
-      var btn = card.querySelector('.card-btn');
-      if (btn) card.insertBefore(tag, btn);
-    }
-
+    var tag = document.createElement('p');
+    tag.className = 'not-included';
+    tag.textContent = 'No incluido en tu compra';
     var btn = card.querySelector('.card-btn');
     if (btn) {
+      card.insertBefore(tag, btn);
       var href = btn.getAttribute('data-locked-href') || '#';
-      var text = btn.getAttribute('data-locked-text') || 'Agregar a mi acceso';
-      /* Botón bloqueado → redirige al checkout, no abre modal */
+      var text = btn.getAttribute('data-locked-text') || 'Agregar a mis herramientas disponibles';
       btn.classList.remove('open-tool');
-      btn.innerHTML = text + SVG_ARROW;
-      btn.addEventListener('click', function () {
-        window.open(href, '_blank', 'noopener');
-      });
+      btn.classList.add('btn-locked');
+      btn.innerHTML = text + SVG(14);
+      btn.addEventListener('click', function () { window.open(href, '_blank', 'noopener'); });
     }
   });
 
-  /* ── Modal ──────────────────────────────────── */
-  var overlay   = document.getElementById('modal-overlay');
-  var modal     = document.getElementById('tool-modal');
-  var frame     = document.getElementById('tool-frame');
-  var closeBtn  = document.getElementById('modal-close');
+  /* KIT NOCTURNO — tratamiento especial */
+  var cardKN        = document.getElementById('card-kn');
+  var knOpenBtn     = document.getElementById('kn-open-btn');
+  var knCheckoutBtn = document.getElementById('kn-checkout-btn');
+
+  function applyKNLocked() {
+    cardKN.classList.add('locked');
+
+    var badge = document.createElement('div');
+    badge.className = 'lock-badge';
+    badge.setAttribute('aria-hidden', 'true');
+    badge.textContent = '🔒';
+    cardKN.appendChild(badge);
+
+    /* Botón "Abrir herramienta" — tono lavanda, dispara password popup */
+    knOpenBtn.classList.remove('open-tool');
+    knOpenBtn.addEventListener('click', openPwModal);
+
+    /* Botón checkout — visible */
+    knCheckoutBtn.style.display = '';
+  }
+
+  function applyKNUnlocked() {
+    cardKN.classList.remove('locked');
+
+    /* Botón "Abrir herramienta" — comportamiento normal (open-tool) */
+    knOpenBtn.classList.add('open-tool');
+    knOpenBtn.classList.remove('kn-open-btn');
+    /* Ocultar botón de checkout */
+    knCheckoutBtn.style.display = 'none';
+  }
+
+  if (knPreviouslyUnlocked) {
+    applyKNUnlocked();
+  } else {
+    applyKNLocked();
+  }
+
+  /* ══════════════════════════════════════════════
+     STEP 3 — Revelar cards con stagger
+  ══════════════════════════════════════════════ */
+  allCards.forEach(function (card, idx) {
+    setTimeout(function () {
+      card.style.transition = 'opacity .6s ease, transform .6s ease, border-color .28s ease, box-shadow .28s ease';
+      card.style.transform  = 'translateY(0)';
+      card.style.opacity    = card.classList.contains('locked') ? '0.52' : '1';
+      card.classList.add('revealed');
+    }, 350 + idx * 130);
+  });
+
+  /* ══════════════════════════════════════════════
+     TOOL MODAL — iframe
+  ══════════════════════════════════════════════ */
+  var overlay      = document.getElementById('modal-overlay');
+  var toolModal    = document.getElementById('tool-modal');
+  var frame        = document.getElementById('tool-frame');
+  var closeBtn     = document.getElementById('modal-close');
   var modalIcon    = document.getElementById('modal-icon');
   var modalLabel   = document.getElementById('modal-label');
   var modalTitle   = document.getElementById('modal-title');
   var modalAccent  = document.getElementById('modal-accent');
   var modalLoading = document.getElementById('modal-loading');
 
-  function openModal(card) {
+  function openToolModal(card) {
     var url   = card.getAttribute('data-tool-url');
     var icon  = card.getAttribute('data-tool-icon');
     var label = card.getAttribute('data-tool-label');
     var name  = card.getAttribute('data-tool-name');
     var color = card.getAttribute('data-tool-color');
 
-    /* Actualizar barra */
     modalIcon.textContent  = icon;
     modalLabel.textContent = label;
     modalTitle.textContent = name;
     modalAccent.style.background = color;
-    modal.style.setProperty('--modal-color', color);
+    toolModal.style.setProperty('--modal-color', color);
 
-    /* Mostrar spinner, limpiar iframe */
     frame.src = '';
     modalLoading.classList.remove('hidden');
 
-    /* Activar */
     overlay.classList.add('active');
-    modal.classList.add('active');
+    toolModal.classList.add('active');
     document.body.style.overflow = 'hidden';
-
-    /* Cargar iframe */
     frame.src = url;
   }
 
-  function closeModal() {
+  function closeToolModal() {
     overlay.classList.remove('active');
-    modal.classList.remove('active');
+    toolModal.classList.remove('active');
     document.body.style.overflow = '';
-    /* Pequeño delay para limpiar src después de la animación */
     setTimeout(function () { frame.src = ''; }, 380);
   }
 
-  /* Ocultar spinner cuando el iframe termina de cargar */
   frame.addEventListener('load', function () {
     if (frame.src) modalLoading.classList.add('hidden');
   });
 
-  /* Event delegation — botones "Abrir herramienta" */
   document.addEventListener('click', function (e) {
     var btn = e.target.closest('.open-tool');
     if (!btn) return;
     var card = btn.closest('.card[data-tool-url]');
     if (!card) return;
     e.preventDefault();
-    openModal(card);
+    openToolModal(card);
   });
 
-  /* Cerrar */
-  closeBtn.addEventListener('click', closeModal);
-  overlay.addEventListener('click', closeModal);
+  closeBtn.addEventListener('click', closeToolModal);
+  overlay.addEventListener('click', closeToolModal);
 
-  /* Cerrar con Escape */
+  /* ══════════════════════════════════════════════
+     PASSWORD MODAL — Kit Nocturno
+  ══════════════════════════════════════════════ */
+  var pwOverlay = document.getElementById('pw-overlay');
+  var pwModal   = document.getElementById('pw-modal');
+  var pwBox     = document.getElementById('pw-box');
+  var pwInput   = document.getElementById('pw-input');
+  var pwError   = document.getElementById('pw-error');
+  var pwCancel  = document.getElementById('pw-cancel');
+  var pwSubmit  = document.getElementById('pw-submit');
+  var pwToggle  = document.getElementById('pw-toggle');
+  var eyeIcon   = document.getElementById('eye-icon');
+
+  /* SVG ojo abierto / cerrado */
+  var EYE_OPEN =
+    '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>' +
+    '<circle cx="12" cy="12" r="3"/>';
+  var EYE_CLOSED =
+    '<path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/>' +
+    '<path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/>' +
+    '<line x1="1" y1="1" x2="23" y2="23"/>';
+
+  function openPwModal() {
+    pwInput.value = '';
+    pwError.classList.remove('visible');
+    pwOverlay.classList.add('active');
+    pwModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    setTimeout(function () { pwInput.focus(); }, 250);
+  }
+
+  function closePwModal() {
+    pwOverlay.classList.remove('active');
+    pwModal.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  function unlockKN() {
+    /* Guardar en localStorage */
+    localStorage.setItem('r360_kn_unlocked', 'true');
+
+    /* Remover estado bloqueado */
+    cardKN.classList.remove('locked');
+    var badge = cardKN.querySelector('.lock-badge');
+    if (badge) badge.remove();
+
+    /* Botón "Abrir herramienta" — comportamiento normal */
+    knOpenBtn.classList.add('open-tool');
+    knOpenBtn.classList.remove('kn-open-btn');
+    knOpenBtn.removeEventListener('click', openPwModal);
+
+    /* Ocultar checkout */
+    knCheckoutBtn.style.display = 'none';
+
+    /* Transición visual a desbloqueado */
+    cardKN.style.opacity = '1';
+  }
+
+  function checkPassword() {
+    var val = pwInput.value.trim().toUpperCase();
+    if (val === KN_PASSWORD.toUpperCase()) {
+      closePwModal();
+      unlockKN();
+      /* Abrir tool modal */
+      setTimeout(function () { openToolModal(cardKN); }, 300);
+    } else {
+      /* Error + shake */
+      pwError.classList.add('visible');
+      pwBox.classList.remove('shake');
+      void pwBox.offsetWidth; /* re-trigger animation */
+      pwBox.classList.add('shake');
+      pwInput.value = '';
+      pwInput.focus();
+    }
+  }
+
+  /* Toggle visibilidad */
+  pwToggle.addEventListener('click', function () {
+    if (pwInput.type === 'password') {
+      pwInput.type = 'text';
+      eyeIcon.innerHTML = EYE_CLOSED;
+    } else {
+      pwInput.type = 'password';
+      eyeIcon.innerHTML = EYE_OPEN;
+    }
+  });
+
+  pwSubmit.addEventListener('click', checkPassword);
+  pwInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') checkPassword();
+    if (pwError.classList.contains('visible')) pwError.classList.remove('visible');
+  });
+
+  pwCancel.addEventListener('click', closePwModal);
+  pwOverlay.addEventListener('click', closePwModal);
+
+  /* Cerrar modales con Escape */
   document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && modal.classList.contains('active')) closeModal();
+    if (e.key !== 'Escape') return;
+    if (pwModal.classList.contains('active'))   closePwModal();
+    if (toolModal.classList.contains('active')) closeToolModal();
   });
 
 })();
