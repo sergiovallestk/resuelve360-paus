@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mis Herramientas · Resuelve360</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+    :root {
+      --bg:       #080b14;
+      --bg2:      #0d1120;
+      --text:     #e4e4f0;
+      --muted:    #7878a0;
+      --border:   rgba(255,255,255,0.07);
+      --teal:     #1D9E75;  --teal-rgb:  29,158,117;
+      --lav:      #a08cff;  --lav-rgb:   160,140,255;
+      --ora:      #d4550a;  --ora-rgb:   212,85,10;
+      --blue:     #4a90d4;  --blue-rgb:  74,144,212;
+    }
+
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 48px 20px 64px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Ambient */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 40% at 15% 15%, rgba(29,158,117,.07) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 85% 80%, rgba(74,144,212,.06) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 30% at 50% 50%, rgba(160,140,255,.04) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    #stars { position:fixed; inset:0; z-index:0; pointer-events:none; }
+    .star {
+      position:absolute; width:2px; height:2px; border-radius:50%;
+      background:#fff; opacity:0;
+      animation:twinkle var(--d,4s) ease-in-out infinite var(--dl,0s);
+    }
+    @keyframes twinkle { 0%,100%{opacity:0} 50%{opacity:var(--op,.35)} }
+
+    /* Layout */
+    .wrapper {
+      position:relative; z-index:1;
+      width:100%; max-width:880px;
+      display:flex; flex-direction:column; align-items:center;
+    }
+
+    /* Brand */
+    .brand {
+      font-size:11px; font-weight:600; letter-spacing:4px;
+      text-transform:uppercase; color:var(--muted);
+      margin-bottom:52px;
+      opacity:0; animation:fadeUp .6s ease forwards .1s;
+    }
+
+    /* Hero */
+    .hero {
+      text-align:center; margin-bottom:12px;
+      opacity:0; animation:fadeUp .7s ease forwards .25s;
+    }
+    .hero-eyebrow {
+      font-size:11px; font-weight:500; letter-spacing:2.5px;
+      text-transform:uppercase; color:var(--teal); margin-bottom:18px;
+    }
+    .hero h1 {
+      font-family:'Cormorant Garamond',serif;
+      font-size:clamp(38px,7vw,62px);
+      font-weight:500; line-height:1.08; color:#fff; margin-bottom:18px;
+    }
+    .hero p {
+      font-size:15px; font-weight:300; color:var(--muted);
+      max-width:420px; margin:0 auto; line-height:1.75;
+    }
+
+    /* Divider */
+    .line {
+      width:1px; height:48px;
+      background:linear-gradient(to bottom,rgba(29,158,117,.6),transparent);
+      margin:32px auto 52px;
+      opacity:0; animation:fadeIn .5s ease forwards .45s;
+    }
+
+    /* Grid */
+    .grid {
+      display:grid; grid-template-columns:repeat(2,1fr);
+      gap:18px; width:100%;
+    }
+
+    /* Card base */
+    .card {
+      background:var(--bg2);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:30px 26px 26px;
+      display:flex; flex-direction:column; gap:18px;
+      position:relative; overflow:hidden;
+      opacity:0;
+      transition:transform .28s ease, border-color .28s ease,
+                 box-shadow .28s ease, opacity .3s ease;
+    }
+
+    /* top accent */
+    .card::before {
+      content:''; position:absolute;
+      top:0; left:0; right:0; height:2px;
+      background:var(--cc);
+      border-radius:18px 18px 0 0;
+      transition:background .3s ease;
+    }
+
+    /* inner glow */
+    .card::after {
+      content:''; position:absolute; inset:0; border-radius:18px;
+      background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(var(--cc-rgb),.08) 0%,transparent 70%);
+      opacity:0; transition:opacity .28s ease; pointer-events:none;
+    }
+
+    /* Unlocked hover */
+    .card:not(.locked):hover {
+      transform:translateY(-5px);
+      border-color:rgba(var(--cc-rgb),.28);
+      box-shadow:0 24px 64px rgba(var(--cc-rgb),.12);
+    }
+    .card:not(.locked):hover::after { opacity:1; }
+
+    /* Color variants + stagger */
+    .c-calma    { --cc:var(--teal); --cc-rgb:var(--teal-rgb); animation:fadeUp .65s ease forwards .55s; }
+    .c-nocturno { --cc:var(--lav);  --cc-rgb:var(--lav-rgb);  animation:fadeUp .65s ease forwards .7s;  }
+    .c-base     { --cc:var(--ora);  --cc-rgb:var(--ora-rgb);  animation:fadeUp .65s ease forwards .85s; }
+    .c-mapa     { --cc:var(--blue); --cc-rgb:var(--blue-rgb); animation:fadeUp .65s ease forwards 1s;   }
+
+    /* Card inner */
+    .card-head { display:flex; align-items:center; gap:14px; }
+
+    .card-icon {
+      width:46px; height:46px; border-radius:12px; flex-shrink:0;
+      background:rgba(var(--cc-rgb),.1); border:1px solid rgba(var(--cc-rgb),.22);
+      display:flex; align-items:center; justify-content:center; font-size:21px;
+      transition:background .3s, border-color .3s;
+    }
+
+    .card-meta { display:flex; flex-direction:column; gap:3px; }
+
+    .card-label {
+      font-size:9px; font-weight:600; letter-spacing:2.5px;
+      text-transform:uppercase; color:var(--cc); transition:color .3s;
+    }
+
+    .card-name {
+      font-family:'Cormorant Garamond',serif;
+      font-size:24px; font-weight:600; color:#fff; line-height:1;
+    }
+
+    .card-promise {
+      font-size:13px; font-weight:400; font-style:italic;
+      color:rgba(var(--cc-rgb),.9);
+      border-left:2px solid var(--cc); padding-left:12px; line-height:1.55;
+      transition:color .3s, border-color .3s;
+    }
+
+    .card-desc {
+      font-size:13.5px; font-weight:300; color:var(--muted);
+      line-height:1.7; flex:1;
+    }
+
+    /* Button — unlocked */
+    .card-btn {
+      display:inline-flex; align-items:center; justify-content:center;
+      gap:8px; padding:11px 20px;
+      background:rgba(var(--cc-rgb),.1); border:1px solid rgba(var(--cc-rgb),.28);
+      border-radius:10px; color:var(--cc);
+      font-family:'DM Sans',sans-serif; font-size:13.5px; font-weight:500;
+      text-decoration:none; letter-spacing:.3px;
+      transition:background .2s, border-color .2s, gap .2s, color .2s;
+    }
+    .card:not(.locked) .card-btn:hover {
+      background:rgba(var(--cc-rgb),.18);
+      border-color:rgba(var(--cc-rgb),.5);
+      gap:12px;
+    }
+    .card-btn svg { flex-shrink:0; transition:transform .2s; }
+    .card:not(.locked) .card-btn:hover svg { transform:translateX(3px); }
+
+    /* ═══════════════════════════════════════════
+       LOCKED STATE
+    ═══════════════════════════════════════════ */
+    .card.locked { opacity:0.52; }
+    .card.locked::before { background:rgba(255,255,255,0.1); }
+    .card.locked .card-icon {
+      background:rgba(255,255,255,.05);
+      border-color:rgba(255,255,255,.08);
+    }
+    .card.locked .card-label  { color:var(--muted); }
+    .card.locked .card-promise {
+      color:rgba(255,255,255,.28);
+      border-left-color:rgba(255,255,255,.14);
+    }
+    .card.locked:hover {
+      opacity:0.78;
+      transform:translateY(-3px);
+      border-color:rgba(255,255,255,.12);
+      box-shadow:0 16px 40px rgba(0,0,0,.3);
+    }
+
+    /* Lock badge */
+    .lock-badge {
+      position:absolute; top:14px; right:14px;
+      width:30px; height:30px;
+      background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1);
+      border-radius:8px;
+      display:flex; align-items:center; justify-content:center;
+      font-size:13px; line-height:1;
+    }
+
+    /* "No incluido" label */
+    .not-included {
+      font-size:9px; font-weight:600; letter-spacing:2px;
+      text-transform:uppercase; color:rgba(255,255,255,.28);
+      text-align:center;
+    }
+
+    /* Button — locked */
+    .card.locked .card-btn {
+      background:rgba(255,255,255,.05);
+      border-color:rgba(255,255,255,.1);
+      color:rgba(255,255,255,.38);
+    }
+    .card.locked .card-btn:hover {
+      background:rgba(255,255,255,.09);
+      border-color:rgba(255,255,255,.2);
+      color:rgba(255,255,255,.65);
+      gap:12px;
+    }
+    .card.locked .card-btn:hover svg { transform:translateX(3px); }
+
+    /* Kit Nocturno — nota "ya lo compraste" */
+    .email-note {
+      display:flex; align-items:flex-start; gap:8px;
+      background:rgba(160,140,255,.05);
+      border:1px solid rgba(160,140,255,.12);
+      border-radius:8px; padding:10px 12px;
+      font-size:11.5px; font-weight:300; color:rgba(255,255,255,.35);
+      line-height:1.55;
+    }
+    .email-note span { font-size:13px; flex-shrink:0; margin-top:1px; }
+
+    /* Footer */
+    .footer {
+      margin-top:52px; text-align:center;
+      display:flex; flex-direction:column; align-items:center; gap:20px;
+      opacity:0; animation:fadeIn .6s ease forwards 1.2s;
+    }
+    .bookmark {
+      display:inline-flex; align-items:center; gap:9px;
+      background:rgba(255,255,255,.04); border:1px solid var(--border);
+      border-radius:100px; padding:10px 22px;
+      font-size:13px; color:var(--muted); font-weight:300;
+    }
+    .footer-copy {
+      font-size:11.5px; color:rgba(120,120,160,.45); letter-spacing:.5px;
+    }
+
+    /* Animations */
+    @keyframes fadeUp  { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes fadeIn  { from{opacity:0} to{opacity:1} }
+
+    /* Responsive */
+    @media (max-width:640px) {
+      body { padding:36px 16px 52px; }
+      .brand { margin-bottom:36px; }
+      .hero  { margin-bottom:8px; }
+      .line  { margin:28px auto 40px; }
+      .grid  { grid-template-columns:1fr; gap:14px; }
+      .card  { padding:24px 20px 22px; }
+      .card-name { font-size:22px; }
+      .footer { margin-top:40px; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="stars"></div>
+
+<div class="wrapper">
+
+  <div class="brand">Resuelve360</div>
+
+  <div class="hero">
+    <div class="hero-eyebrow">✦ Acceso a tus herramientas</div>
+    <h1>Tu espacio<br>de calma</h1>
+    <p>Todo lo que adquiriste está aquí. Ábrelo cuando lo necesites, sin buscar correos ni contraseñas.</p>
+  </div>
+
+  <div class="line"></div>
+
+  <div class="grid">
+
+    <!-- ═══════════════════════════════════════
+         MODO CALMA · código: mc
+         Checkout: https://pay.hotmart.com/T105864910A?checkoutMode=10
+    ════════════════════════════════════════ -->
+    <div class="card c-calma" data-product="mc">
+      <div class="card-head">
+        <div class="card-icon">🌿</div>
+        <div class="card-meta">
+          <span class="card-label">Sistema guiado · 5 pasos</span>
+          <span class="card-name">Modo Calma</span>
+        </div>
+      </div>
+      <p class="card-promise">"Detén un ataque de pánico en menos de 10 minutos."</p>
+      <p class="card-desc">Tu herramienta para el momento exacto. 5 pasos para cuando el cuerpo entra en modo alarma, sin necesitar saber nada de antemano.</p>
+      <a href="https://apps.resuelve360.com/modo-calma"
+         class="card-btn" target="_blank" rel="noopener"
+         data-locked-href="https://pay.hotmart.com/T105864910A?checkoutMode=10"
+         data-locked-text="Obtener acceso">
+        Abrir herramienta
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 7H13M7 1L13 7L7 13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         KIT NOCTURNO · código: kn
+         Siempre bloqueado (order bump del checkout).
+         Checkout independiente: https://pay.hotmart.com/X105865217T
+         Incluye nota para quienes sí lo compraron en el checkout.
+    ════════════════════════════════════════ -->
+    <div class="card c-nocturno" data-product="kn">
+      <div class="card-head">
+        <div class="card-icon">🌙</div>
+        <div class="card-meta">
+          <span class="card-label">Ritual guiado · 4 fases</span>
+          <span class="card-name">Kit Nocturno</span>
+        </div>
+      </div>
+      <p class="card-promise">"Prepara tu sistema nervioso antes de dormir."</p>
+      <p class="card-desc">Un ritual de 4 fases para cerrar el día sin ansiedad acumulada y entrar en un sueño más profundo y reparador.</p>
+      <a href="https://pay.hotmart.com/X105865217T"
+         class="card-btn" target="_blank" rel="noopener"
+         data-locked-href="https://pay.hotmart.com/X105865217T"
+         data-locked-text="Agregar a mi acceso">
+        Agregar a mi acceso
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 7H13M7 1L13 7L7 13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <!-- Nota para quien ya lo compró como order bump -->
+      <div class="email-note">
+        <span>📩</span>
+        ¿Ya lo agregaste en el checkout? Encuéntralo en el email de confirmación que Hotmart te envió.
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         BASE CERO · código: bc
+         Checkout: https://pay.hotmart.com/G105865709J
+    ════════════════════════════════════════ -->
+    <div class="card c-base" data-product="bc">
+      <div class="card-head">
+        <div class="card-icon">🌅</div>
+        <div class="card-meta">
+          <span class="card-label">Rutina matutina · 7 min</span>
+          <span class="card-name">Base Cero</span>
+        </div>
+      </div>
+      <p class="card-promise">"Reduce tu nivel base de ansiedad desde el inicio del día."</p>
+      <p class="card-desc">7 minutos cada mañana para empezar desde calma, no desde reacción. El cuerpo se entrena con constancia, no con esfuerzo.</p>
+      <a href="https://apps.resuelve360.com/base-cero"
+         class="card-btn" target="_blank" rel="noopener"
+         data-locked-href="https://pay.hotmart.com/G105865709J"
+         data-locked-text="Agregar a mi acceso">
+        Abrir herramienta
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 7H13M7 1L13 7L7 13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         MAPA DEL PÁNICO · código: mp
+         Checkout: https://pay.hotmart.com/C105865762J
+    ════════════════════════════════════════ -->
+    <div class="card c-mapa" data-product="mp">
+      <div class="card-head">
+        <div class="card-icon">🗺️</div>
+        <div class="card-meta">
+          <span class="card-label">Mini herramienta · historial</span>
+          <span class="card-name">Mapa del Pánico</span>
+        </div>
+      </div>
+      <p class="card-promise">"Identifica tus patrones para anticipar el siguiente episodio."</p>
+      <p class="card-desc">Mapea disparadores, señales físicas y contexto de cada episodio. Cuanto más lo usas, más claridad tienes sobre lo que te activa.</p>
+      <a href="https://apps.resuelve360.com/mapa-panico"
+         class="card-btn" target="_blank" rel="noopener"
+         data-locked-href="https://pay.hotmart.com/C105865762J"
+         data-locked-text="Agregar a mi acceso">
+        Abrir herramienta
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 7H13M7 1L13 7L7 13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+
+  </div><!-- /.grid -->
+
+  <div class="footer">
+    <div class="bookmark">
+      <span>🔖</span>
+      Guarda esta página en favoritos — aquí siempre tendrás todo
+    </div>
+    <p class="footer-copy">Resuelve360 · Herramientas para el sistema nervioso</p>
+  </div>
+
+</div><!-- /.wrapper -->
+
+<script>
+(function () {
+
+  /* ── Stars ──────────────────────────────────── */
+  var starsEl = document.getElementById('stars');
+  for (var i = 0; i < 55; i++) {
+    var s = document.createElement('div');
+    s.className = 'star';
+    s.style.cssText =
+      'left:'  + (Math.random() * 100).toFixed(2) + '%;' +
+      'top:'   + (Math.random() * 100).toFixed(2) + '%;' +
+      '--d:'   + (3 + Math.random() * 5).toFixed(2) + 's;' +
+      '--dl:'  + (Math.random() * 7).toFixed(2) + 's;' +
+      '--op:'  + (0.2 + Math.random() * 0.45).toFixed(2) + ';';
+    starsEl.appendChild(s);
+  }
+
+  /* ── Leer parámetro ?p= ─────────────────────
+   *
+   *  Kit Nocturno (kn) NUNCA se incluye en el parámetro
+   *  porque es un order bump y no podemos saber desde el
+   *  funnel si el comprador lo tomó o no. Su card siempre
+   *  aparece bloqueada con opción de comprarlo y una nota
+   *  para quien sí lo compró en el checkout.
+   *
+   *  URLs para configurar en Hotmart (Embudo → Página de Gracias):
+   *
+   *  Rechazó ambos upsells:
+   *    apps.resuelve360.com/gracias?p=mc
+   *
+   *  Aceptó Base Cero, rechazó Mapa del Pánico:
+   *    apps.resuelve360.com/gracias?p=mc,bc
+   *
+   *  Aceptó ambos upsells:
+   *    apps.resuelve360.com/gracias?p=mc,bc,mp
+   *
+   *  Sin parámetro → todo desbloqueado (acceso por favoritos / email directo).
+   * ─────────────────────────────────────────── */
+
+  var params   = new URLSearchParams(window.location.search);
+  var pParam   = params.get('p');
+
+  /* Sin parámetro → desbloquear todo excepto Kit Nocturno */
+  var unlocked = new Set(pParam
+    ? pParam.split(',').map(function (v) { return v.trim().toLowerCase(); })
+    : ['mc', 'bc', 'mp']   /* kn nunca se desbloquea automáticamente */
+  );
+
+  var SVG_ARROW =
+    '<svg width="14" height="14" viewBox="0 0 14 14" fill="none">' +
+    '<path d="M1 7H13M7 1L13 7L7 13" stroke="currentColor" ' +
+    'stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>' +
+    '</svg>';
+
+  /* ── Aplicar estado bloqueado ─────────────── */
+  document.querySelectorAll('.card[data-product]').forEach(function (card) {
+    var code = card.getAttribute('data-product');
+    if (unlocked.has(code)) return; /* tiene acceso, nada que hacer */
+
+    /* 1. Clase locked */
+    card.classList.add('locked');
+
+    /* 2. Badge candado */
+    var badge = document.createElement('div');
+    badge.className = 'lock-badge';
+    badge.setAttribute('aria-hidden', 'true');
+    badge.textContent = '🔒';
+    card.appendChild(badge);
+
+    /* 3. Etiqueta "No incluido" — solo para productos que no son kn */
+    if (code !== 'kn') {
+      var tag = document.createElement('p');
+      tag.className = 'not-included';
+      tag.textContent = 'No incluido en tu compra';
+      var btn = card.querySelector('.card-btn');
+      if (btn) card.insertBefore(tag, btn);
+    }
+
+    /* 4. Actualizar botón con checkout individual */
+    var btn = card.querySelector('.card-btn');
+    if (btn) {
+      var lockedHref = btn.getAttribute('data-locked-href') || '#';
+      var lockedText = btn.getAttribute('data-locked-text') || 'Agregar a mi acceso';
+      btn.setAttribute('href', lockedHref);
+      btn.innerHTML = lockedText + SVG_ARROW;
+    }
+  });
+
+  /* Kit Nocturno siempre arranca bloqueado desde el HTML —
+     el JS solo lo procesa igual que los demás si llegara
+     a estar en el set (nunca ocurrirá con las URLs actuales). */
+
+})();
+</script>
+
+</body>
+</html>
