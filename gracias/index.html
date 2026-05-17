@@ -17,6 +17,7 @@
       --lav:      #a08cff;  --lav-rgb:   160,140,255;
       --ora:      #d4550a;  --ora-rgb:   212,85,10;
       --blue:     #4a90d4;  --blue-rgb:  74,144,212;
+      --modal-bar: 52px;
     }
 
     *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
@@ -115,8 +116,6 @@
       transition:transform .28s ease, border-color .28s ease,
                  box-shadow .28s ease, opacity .3s ease;
     }
-
-    /* top accent */
     .card::before {
       content:''; position:absolute;
       top:0; left:0; right:0; height:2px;
@@ -124,15 +123,11 @@
       border-radius:18px 18px 0 0;
       transition:background .3s ease;
     }
-
-    /* inner glow */
     .card::after {
       content:''; position:absolute; inset:0; border-radius:18px;
       background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(var(--cc-rgb),.08) 0%,transparent 70%);
       opacity:0; transition:opacity .28s ease; pointer-events:none;
     }
-
-    /* Unlocked hover */
     .card:not(.locked):hover {
       transform:translateY(-5px);
       border-color:rgba(var(--cc-rgb),.28);
@@ -148,33 +143,27 @@
 
     /* Card inner */
     .card-head { display:flex; align-items:center; gap:14px; }
-
     .card-icon {
       width:46px; height:46px; border-radius:12px; flex-shrink:0;
       background:rgba(var(--cc-rgb),.1); border:1px solid rgba(var(--cc-rgb),.22);
       display:flex; align-items:center; justify-content:center; font-size:21px;
       transition:background .3s, border-color .3s;
     }
-
     .card-meta { display:flex; flex-direction:column; gap:3px; }
-
     .card-label {
       font-size:9px; font-weight:600; letter-spacing:2.5px;
       text-transform:uppercase; color:var(--cc); transition:color .3s;
     }
-
     .card-name {
       font-family:'Cormorant Garamond',serif;
       font-size:24px; font-weight:600; color:#fff; line-height:1;
     }
-
     .card-promise {
       font-size:13px; font-weight:400; font-style:italic;
       color:rgba(var(--cc-rgb),.9);
       border-left:2px solid var(--cc); padding-left:12px; line-height:1.55;
       transition:color .3s, border-color .3s;
     }
-
     .card-desc {
       font-size:13.5px; font-weight:300; color:var(--muted);
       line-height:1.7; flex:1;
@@ -187,7 +176,7 @@
       background:rgba(var(--cc-rgb),.1); border:1px solid rgba(var(--cc-rgb),.28);
       border-radius:10px; color:var(--cc);
       font-family:'DM Sans',sans-serif; font-size:13.5px; font-weight:500;
-      text-decoration:none; letter-spacing:.3px;
+      text-decoration:none; letter-spacing:.3px; cursor:pointer;
       transition:background .2s, border-color .2s, gap .2s, color .2s;
     }
     .card:not(.locked) .card-btn:hover {
@@ -203,23 +192,11 @@
     ═══════════════════════════════════════════ */
     .card.locked { opacity:0.52; }
     .card.locked::before { background:rgba(255,255,255,0.1); }
-    .card.locked .card-icon {
-      background:rgba(255,255,255,.05);
-      border-color:rgba(255,255,255,.08);
-    }
+    .card.locked .card-icon { background:rgba(255,255,255,.05); border-color:rgba(255,255,255,.08); }
     .card.locked .card-label  { color:var(--muted); }
-    .card.locked .card-promise {
-      color:rgba(255,255,255,.28);
-      border-left-color:rgba(255,255,255,.14);
-    }
-    .card.locked:hover {
-      opacity:0.78;
-      transform:translateY(-3px);
-      border-color:rgba(255,255,255,.12);
-      box-shadow:0 16px 40px rgba(0,0,0,.3);
-    }
+    .card.locked .card-promise { color:rgba(255,255,255,.28); border-left-color:rgba(255,255,255,.14); }
+    .card.locked:hover { opacity:0.78; transform:translateY(-3px); border-color:rgba(255,255,255,.12); box-shadow:0 16px 40px rgba(0,0,0,.3); }
 
-    /* Lock badge */
     .lock-badge {
       position:absolute; top:14px; right:14px;
       width:30px; height:30px;
@@ -228,36 +205,24 @@
       display:flex; align-items:center; justify-content:center;
       font-size:13px; line-height:1;
     }
-
-    /* "No incluido" label */
     .not-included {
       font-size:9px; font-weight:600; letter-spacing:2px;
-      text-transform:uppercase; color:rgba(255,255,255,.28);
-      text-align:center;
+      text-transform:uppercase; color:rgba(255,255,255,.28); text-align:center;
     }
-
-    /* Button — locked */
     .card.locked .card-btn {
-      background:rgba(255,255,255,.05);
-      border-color:rgba(255,255,255,.1);
-      color:rgba(255,255,255,.38);
+      background:rgba(255,255,255,.05); border-color:rgba(255,255,255,.1); color:rgba(255,255,255,.38);
     }
     .card.locked .card-btn:hover {
-      background:rgba(255,255,255,.09);
-      border-color:rgba(255,255,255,.2);
-      color:rgba(255,255,255,.65);
-      gap:12px;
+      background:rgba(255,255,255,.09); border-color:rgba(255,255,255,.2); color:rgba(255,255,255,.65); gap:12px;
     }
     .card.locked .card-btn:hover svg { transform:translateX(3px); }
 
-    /* Kit Nocturno — nota "ya lo compraste" */
+    /* Kit Nocturno — nota email */
     .email-note {
       display:flex; align-items:flex-start; gap:8px;
-      background:rgba(160,140,255,.05);
-      border:1px solid rgba(160,140,255,.12);
+      background:rgba(160,140,255,.05); border:1px solid rgba(160,140,255,.12);
       border-radius:8px; padding:10px 12px;
-      font-size:11.5px; font-weight:300; color:rgba(255,255,255,.35);
-      line-height:1.55;
+      font-size:11.5px; font-weight:300; color:rgba(255,255,255,.35); line-height:1.55;
     }
     .email-note span { font-size:13px; flex-shrink:0; margin-top:1px; }
 
@@ -273,8 +238,105 @@
       border-radius:100px; padding:10px 22px;
       font-size:13px; color:var(--muted); font-weight:300;
     }
-    .footer-copy {
-      font-size:11.5px; color:rgba(120,120,160,.45); letter-spacing:.5px;
+    .footer-copy { font-size:11.5px; color:rgba(120,120,160,.45); letter-spacing:.5px; }
+
+    /* ═══════════════════════════════════════════
+       MODAL CON IFRAME
+    ═══════════════════════════════════════════ */
+
+    /* Overlay oscuro */
+    #modal-overlay {
+      position:fixed; inset:0; z-index:100;
+      background:rgba(4,6,14,.92);
+      opacity:0; pointer-events:none;
+      transition:opacity .3s ease;
+      backdrop-filter:blur(4px);
+      -webkit-backdrop-filter:blur(4px);
+    }
+    #modal-overlay.active { opacity:1; pointer-events:all; }
+
+    /* Contenedor del modal */
+    #tool-modal {
+      position:fixed; inset:0; z-index:101;
+      display:flex; flex-direction:column;
+      transform:translateY(100%);
+      transition:transform .36s cubic-bezier(.4,0,.2,1);
+    }
+    #tool-modal.active { transform:translateY(0); }
+
+    /* Barra superior del modal */
+    .modal-bar {
+      height:var(--modal-bar);
+      background:#0a0d18;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      display:flex; align-items:center;
+      padding:0 16px 0 20px;
+      gap:12px;
+      flex-shrink:0;
+    }
+
+    .modal-bar-icon { font-size:18px; line-height:1; flex-shrink:0; }
+
+    .modal-bar-info { display:flex; flex-direction:column; gap:1px; flex:1; min-width:0; }
+
+    .modal-bar-label {
+      font-size:9px; font-weight:600; letter-spacing:2px;
+      text-transform:uppercase; color:var(--modal-color, var(--teal));
+      line-height:1;
+    }
+
+    .modal-bar-name {
+      font-family:'Cormorant Garamond',serif;
+      font-size:17px; font-weight:600; color:#fff;
+      line-height:1.1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+
+    /* Botón cerrar */
+    .modal-close {
+      width:36px; height:36px; border-radius:10px;
+      background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1);
+      color:rgba(255,255,255,.6); cursor:pointer;
+      display:flex; align-items:center; justify-content:center;
+      font-size:18px; line-height:1;
+      transition:background .2s, color .2s, border-color .2s;
+      flex-shrink:0;
+    }
+    .modal-close:hover { background:rgba(255,255,255,.12); color:#fff; border-color:rgba(255,255,255,.2); }
+
+    /* Separador de color */
+    .modal-accent {
+      height:2px; background:var(--modal-color, var(--teal));
+      flex-shrink:0;
+      transition:background .3s;
+    }
+
+    /* Loading indicator */
+    .modal-loading {
+      position:absolute;
+      top:calc(var(--modal-bar) + 2px); left:0; right:0; bottom:0;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      gap:16px; background:var(--bg); z-index:1; pointer-events:none;
+      transition:opacity .3s ease;
+    }
+    .modal-loading.hidden { opacity:0; }
+
+    .spinner {
+      width:36px; height:36px; border-radius:50%;
+      border:2px solid rgba(255,255,255,.08);
+      border-top-color:var(--modal-color, var(--teal));
+      animation:spin .8s linear infinite;
+    }
+    @keyframes spin { to { transform:rotate(360deg); } }
+
+    .modal-loading p {
+      font-size:12px; color:var(--muted); font-weight:300; letter-spacing:.5px;
+    }
+
+    /* iframe */
+    #tool-frame {
+      flex:1; width:100%; border:none;
+      background:var(--bg);
+      position:relative; z-index:0;
     }
 
     /* Animations */
@@ -291,13 +353,44 @@
       .card  { padding:24px 20px 22px; }
       .card-name { font-size:22px; }
       .footer { margin-top:40px; }
+      .modal-bar { padding:0 12px 0 16px; }
+      .modal-bar-name { font-size:15px; }
     }
   </style>
 </head>
 <body>
 
+<!-- ── Stars ─────────────────────────────────── -->
 <div id="stars"></div>
 
+<!-- ════════════════════════════════════════════
+     MODAL CON IFRAME
+════════════════════════════════════════════ -->
+<div id="modal-overlay"></div>
+
+<div id="tool-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal-bar">
+    <span class="modal-bar-icon" id="modal-icon" aria-hidden="true"></span>
+    <div class="modal-bar-info">
+      <span class="modal-bar-label" id="modal-label"></span>
+      <span class="modal-bar-name" id="modal-title"></span>
+    </div>
+    <button class="modal-close" id="modal-close" aria-label="Cerrar herramienta">✕</button>
+  </div>
+  <div class="modal-accent" id="modal-accent"></div>
+
+  <!-- Spinner mientras carga el iframe -->
+  <div class="modal-loading" id="modal-loading">
+    <div class="spinner"></div>
+    <p>Cargando herramienta…</p>
+  </div>
+
+  <iframe id="tool-frame" title="Herramienta Resuelve360" src="" allowfullscreen></iframe>
+</div>
+
+<!-- ════════════════════════════════════════════
+     PÁGINA PRINCIPAL
+════════════════════════════════════════════ -->
 <div class="wrapper">
 
   <div class="brand">Resuelve360</div>
@@ -312,11 +405,13 @@
 
   <div class="grid">
 
-    <!-- ═══════════════════════════════════════
-         MODO CALMA · código: mc
-         Checkout: https://pay.hotmart.com/T105864910A?checkoutMode=10
-    ════════════════════════════════════════ -->
-    <div class="card c-calma" data-product="mc">
+    <!-- MODO CALMA · mc ──────────────────────── -->
+    <div class="card c-calma" data-product="mc"
+         data-tool-url="https://apps.resuelve360.com/modo-calma"
+         data-tool-icon="🌿"
+         data-tool-label="Sistema guiado · 5 pasos"
+         data-tool-name="Modo Calma"
+         data-tool-color="#1D9E75">
       <div class="card-head">
         <div class="card-icon">🌿</div>
         <div class="card-meta">
@@ -326,22 +421,21 @@
       </div>
       <p class="card-promise">"Detén un ataque de pánico en menos de 10 minutos."</p>
       <p class="card-desc">Tu herramienta para el momento exacto. 5 pasos para cuando el cuerpo entra en modo alarma, sin necesitar saber nada de antemano.</p>
-      <a href="https://apps.resuelve360.com/modo-calma"
-         class="card-btn" target="_blank" rel="noopener"
-         data-locked-href="https://pay.hotmart.com/T105864910A?checkoutMode=10"
-         data-locked-text="Obtener acceso">
+      <button class="card-btn open-tool"
+              data-locked-href="https://pay.hotmart.com/T105864910A?checkoutMode=10"
+              data-locked-text="Obtener acceso">
         Abrir herramienta
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 7H13M7 1L13 7L7 13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </a>
+      </button>
     </div>
 
-    <!-- ═══════════════════════════════════════
-         KIT NOCTURNO · código: kn
-         Siempre bloqueado (order bump del checkout).
-         Checkout independiente: https://pay.hotmart.com/X105865217T
-         Incluye nota para quienes sí lo compraron en el checkout.
-    ════════════════════════════════════════ -->
-    <div class="card c-nocturno" data-product="kn">
+    <!-- KIT NOCTURNO · kn ────────────────────── -->
+    <div class="card c-nocturno" data-product="kn"
+         data-tool-url="https://apps.resuelve360.com/kit-nocturno"
+         data-tool-icon="🌙"
+         data-tool-label="Ritual guiado · 4 fases"
+         data-tool-name="Kit Nocturno"
+         data-tool-color="#a08cff">
       <div class="card-head">
         <div class="card-icon">🌙</div>
         <div class="card-meta">
@@ -351,25 +445,25 @@
       </div>
       <p class="card-promise">"Prepara tu sistema nervioso antes de dormir."</p>
       <p class="card-desc">Un ritual de 4 fases para cerrar el día sin ansiedad acumulada y entrar en un sueño más profundo y reparador.</p>
-      <a href="https://pay.hotmart.com/X105865217T"
-         class="card-btn" target="_blank" rel="noopener"
-         data-locked-href="https://pay.hotmart.com/X105865217T"
-         data-locked-text="Agregar a mi acceso">
-        Agregar a mi acceso
+      <button class="card-btn open-tool"
+              data-locked-href="https://pay.hotmart.com/X105865217T"
+              data-locked-text="Agregar a mi acceso">
+        Abrir herramienta
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 7H13M7 1L13 7L7 13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </a>
-      <!-- Nota para quien ya lo compró como order bump -->
+      </button>
       <div class="email-note">
         <span>📩</span>
         ¿Ya lo agregaste en el checkout? Encuéntralo en el email de confirmación que Hotmart te envió.
       </div>
     </div>
 
-    <!-- ═══════════════════════════════════════
-         BASE CERO · código: bc
-         Checkout: https://pay.hotmart.com/G105865709J
-    ════════════════════════════════════════ -->
-    <div class="card c-base" data-product="bc">
+    <!-- BASE CERO · bc ───────────────────────── -->
+    <div class="card c-base" data-product="bc"
+         data-tool-url="https://apps.resuelve360.com/base-cero"
+         data-tool-icon="🌅"
+         data-tool-label="Rutina matutina · 7 min"
+         data-tool-name="Base Cero"
+         data-tool-color="#d4550a">
       <div class="card-head">
         <div class="card-icon">🌅</div>
         <div class="card-meta">
@@ -379,20 +473,21 @@
       </div>
       <p class="card-promise">"Reduce tu nivel base de ansiedad desde el inicio del día."</p>
       <p class="card-desc">7 minutos cada mañana para empezar desde calma, no desde reacción. El cuerpo se entrena con constancia, no con esfuerzo.</p>
-      <a href="https://apps.resuelve360.com/base-cero"
-         class="card-btn" target="_blank" rel="noopener"
-         data-locked-href="https://pay.hotmart.com/G105865709J"
-         data-locked-text="Agregar a mi acceso">
+      <button class="card-btn open-tool"
+              data-locked-href="https://pay.hotmart.com/G105865709J"
+              data-locked-text="Agregar a mi acceso">
         Abrir herramienta
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 7H13M7 1L13 7L7 13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </a>
+      </button>
     </div>
 
-    <!-- ═══════════════════════════════════════
-         MAPA DEL PÁNICO · código: mp
-         Checkout: https://pay.hotmart.com/C105865762J
-    ════════════════════════════════════════ -->
-    <div class="card c-mapa" data-product="mp">
+    <!-- MAPA DEL PÁNICO · mp ─────────────────── -->
+    <div class="card c-mapa" data-product="mp"
+         data-tool-url="https://apps.resuelve360.com/mapa-panico"
+         data-tool-icon="🗺️"
+         data-tool-label="Mini herramienta · historial"
+         data-tool-name="Mapa del Pánico"
+         data-tool-color="#4a90d4">
       <div class="card-head">
         <div class="card-icon">🗺️</div>
         <div class="card-meta">
@@ -402,13 +497,12 @@
       </div>
       <p class="card-promise">"Identifica tus patrones para anticipar el siguiente episodio."</p>
       <p class="card-desc">Mapea disparadores, señales físicas y contexto de cada episodio. Cuanto más lo usas, más claridad tienes sobre lo que te activa.</p>
-      <a href="https://apps.resuelve360.com/mapa-panico"
-         class="card-btn" target="_blank" rel="noopener"
-         data-locked-href="https://pay.hotmart.com/C105865762J"
-         data-locked-text="Agregar a mi acceso">
+      <button class="card-btn open-tool"
+              data-locked-href="https://pay.hotmart.com/C105865762J"
+              data-locked-text="Agregar a mi acceso">
         Abrir herramienta
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 7H13M7 1L13 7L7 13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </a>
+      </button>
     </div>
 
   </div><!-- /.grid -->
@@ -440,59 +534,42 @@
     starsEl.appendChild(s);
   }
 
-  /* ── Leer parámetro ?p= ─────────────────────
+  /* ── Parámetro ?p= ───────────────────────────
+   *  Códigos: mc · bc · mp   (kn siempre bloqueado)
    *
-   *  Kit Nocturno (kn) NUNCA se incluye en el parámetro
-   *  porque es un order bump y no podemos saber desde el
-   *  funnel si el comprador lo tomó o no. Su card siempre
-   *  aparece bloqueada con opción de comprarlo y una nota
-   *  para quien sí lo compró en el checkout.
-   *
-   *  URLs para configurar en Hotmart (Embudo → Página de Gracias):
-   *
-   *  Rechazó ambos upsells:
-   *    apps.resuelve360.com/gracias?p=mc
-   *
-   *  Aceptó Base Cero, rechazó Mapa del Pánico:
-   *    apps.resuelve360.com/gracias?p=mc,bc
-   *
-   *  Aceptó ambos upsells:
-   *    apps.resuelve360.com/gracias?p=mc,bc,mp
-   *
-   *  Sin parámetro → todo desbloqueado (acceso por favoritos / email directo).
+   *  URLs para Hotmart (Embudo → Página de Gracias):
+   *    Rechazó ambos upsells      → ?p=mc
+   *    Aceptó Base Cero           → ?p=mc,bc
+   *    Aceptó ambos upsells       → ?p=mc,bc,mp
+   *    Sin parámetro (favoritos)  → mc, bc, mp desbloqueados
    * ─────────────────────────────────────────── */
-
-  var params   = new URLSearchParams(window.location.search);
-  var pParam   = params.get('p');
-
-  /* Sin parámetro → desbloquear todo excepto Kit Nocturno */
+  var params  = new URLSearchParams(window.location.search);
+  var pParam  = params.get('p');
   var unlocked = new Set(pParam
     ? pParam.split(',').map(function (v) { return v.trim().toLowerCase(); })
-    : ['mc', 'bc', 'mp']   /* kn nunca se desbloquea automáticamente */
+    : ['mc', 'bc', 'mp']
   );
+  /* kn NUNCA se desbloquea automáticamente */
+  unlocked.delete('kn');
 
   var SVG_ARROW =
     '<svg width="14" height="14" viewBox="0 0 14 14" fill="none">' +
     '<path d="M1 7H13M7 1L13 7L7 13" stroke="currentColor" ' +
-    'stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>' +
-    '</svg>';
+    'stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
   /* ── Aplicar estado bloqueado ─────────────── */
   document.querySelectorAll('.card[data-product]').forEach(function (card) {
     var code = card.getAttribute('data-product');
-    if (unlocked.has(code)) return; /* tiene acceso, nada que hacer */
+    if (unlocked.has(code)) return;
 
-    /* 1. Clase locked */
     card.classList.add('locked');
 
-    /* 2. Badge candado */
     var badge = document.createElement('div');
     badge.className = 'lock-badge';
     badge.setAttribute('aria-hidden', 'true');
     badge.textContent = '🔒';
     card.appendChild(badge);
 
-    /* 3. Etiqueta "No incluido" — solo para productos que no son kn */
     if (code !== 'kn') {
       var tag = document.createElement('p');
       tag.className = 'not-included';
@@ -501,19 +578,88 @@
       if (btn) card.insertBefore(tag, btn);
     }
 
-    /* 4. Actualizar botón con checkout individual */
     var btn = card.querySelector('.card-btn');
     if (btn) {
-      var lockedHref = btn.getAttribute('data-locked-href') || '#';
-      var lockedText = btn.getAttribute('data-locked-text') || 'Agregar a mi acceso';
-      btn.setAttribute('href', lockedHref);
-      btn.innerHTML = lockedText + SVG_ARROW;
+      var href = btn.getAttribute('data-locked-href') || '#';
+      var text = btn.getAttribute('data-locked-text') || 'Agregar a mi acceso';
+      /* Botón bloqueado → redirige al checkout, no abre modal */
+      btn.classList.remove('open-tool');
+      btn.innerHTML = text + SVG_ARROW;
+      btn.addEventListener('click', function () {
+        window.open(href, '_blank', 'noopener');
+      });
     }
   });
 
-  /* Kit Nocturno siempre arranca bloqueado desde el HTML —
-     el JS solo lo procesa igual que los demás si llegara
-     a estar en el set (nunca ocurrirá con las URLs actuales). */
+  /* ── Modal ──────────────────────────────────── */
+  var overlay   = document.getElementById('modal-overlay');
+  var modal     = document.getElementById('tool-modal');
+  var frame     = document.getElementById('tool-frame');
+  var closeBtn  = document.getElementById('modal-close');
+  var modalIcon    = document.getElementById('modal-icon');
+  var modalLabel   = document.getElementById('modal-label');
+  var modalTitle   = document.getElementById('modal-title');
+  var modalAccent  = document.getElementById('modal-accent');
+  var modalLoading = document.getElementById('modal-loading');
+
+  function openModal(card) {
+    var url   = card.getAttribute('data-tool-url');
+    var icon  = card.getAttribute('data-tool-icon');
+    var label = card.getAttribute('data-tool-label');
+    var name  = card.getAttribute('data-tool-name');
+    var color = card.getAttribute('data-tool-color');
+
+    /* Actualizar barra */
+    modalIcon.textContent  = icon;
+    modalLabel.textContent = label;
+    modalTitle.textContent = name;
+    modalAccent.style.background = color;
+    modal.style.setProperty('--modal-color', color);
+
+    /* Mostrar spinner, limpiar iframe */
+    frame.src = '';
+    modalLoading.classList.remove('hidden');
+
+    /* Activar */
+    overlay.classList.add('active');
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+
+    /* Cargar iframe */
+    frame.src = url;
+  }
+
+  function closeModal() {
+    overlay.classList.remove('active');
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+    /* Pequeño delay para limpiar src después de la animación */
+    setTimeout(function () { frame.src = ''; }, 380);
+  }
+
+  /* Ocultar spinner cuando el iframe termina de cargar */
+  frame.addEventListener('load', function () {
+    if (frame.src) modalLoading.classList.add('hidden');
+  });
+
+  /* Event delegation — botones "Abrir herramienta" */
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest('.open-tool');
+    if (!btn) return;
+    var card = btn.closest('.card[data-tool-url]');
+    if (!card) return;
+    e.preventDefault();
+    openModal(card);
+  });
+
+  /* Cerrar */
+  closeBtn.addEventListener('click', closeModal);
+  overlay.addEventListener('click', closeModal);
+
+  /* Cerrar con Escape */
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && modal.classList.contains('active')) closeModal();
+  });
 
 })();
 </script>
